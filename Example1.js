@@ -5,9 +5,17 @@ class Example1 extends Phaser.Scene {
     preload() {
         this.load.image('sun', 'assets/sun.jpg');
     }
-    
     create() {
         this.image = this.add.image(400,300,'sun');
+        var score = 0;
+        var scoreText;
+        var kshhText;
+        scoreText = this.add.text(16, 16, 'Welcome to Snakes.  Hit T to enter map', { fontSize: '32px', fill: '#555' });
+        this.input.keyboard.on('keyup_T', (event) => {
+            kshhText = this.add.text(16, 128, 'kShKshKsH a la strider&c', { fontSize: '32px', fill: '#444' });
+            
+        });
+
 
         this.input.keyboard.on('keyup_D', (event) => {
             //console.log('keyup_D registered');
@@ -34,12 +42,14 @@ class Example1 extends Phaser.Scene {
 
         this.input.keyboard.on('keyup', (event) =>{
             if(event.key == "2") {
-                this.scene.start("Example2");
+                this.input.stopPropagation();
+                this.scene.switch("Example2");
             }
         });
         this.input.keyboard.on('keyup', (event) =>{
             if(event.key == "3") {
-                this.scene.start("Example3");
+                this.input.stopPropagation();
+                this.scene.switch("Example3");
             }
         });
     }

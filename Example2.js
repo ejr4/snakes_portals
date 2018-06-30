@@ -24,13 +24,16 @@ class Example2 extends Phaser.Scene{
         this.key_1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
         this.input.keyboard.on('keyup', (event) =>{
             if(event.key == "3") {
-                this.scene.start("Example3");
+                this.input.stopPropagation();
+                this.scene.switch("Example3");
             }
         });
     }
 
     update(delta) {
-        if(this.key_1.isDown)
-        this.scene.start("Example1");
+        if(this.key_1.isDown) {
+            this.input.stopPropagation();
+            this.scene.switch("Example1");
+        }
     }/// this is polling.  per frame
 }

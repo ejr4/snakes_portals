@@ -25,13 +25,20 @@ class Example3 extends Phaser.Scene {
 
          this.input.keyboard.on('keyup', (event) =>{
              if(event.key == "1") {
-                 this.scene.start("Example1");
+                 if(this.soundFX.isPlaying) {
+                     this.soundFX.stop();
+                 }
+                 this.input.stopPropagation();
+                 this.scene.switch("Example1");
                 
              }
         });
          this.input.keyboard.on('keyup', (event) =>{
              if(event.key == "2") {
-                 this.scene.start("Example2");
+                
+                    this.soundFX.stop();
+                    this.input.stopPropagation();
+                 this.scene.switch("Example2");
              }
         });
     }
