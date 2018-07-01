@@ -16,6 +16,7 @@ class Example1 extends Phaser.Scene {
 
         var tile200Text = this.add.text(16, 128, 'Hit N to enter movement tile map 200', { fontSize: '32px', fill: '#555' });
         var tileJson = this.add.text(16, 176, 'Hit J to enter movement Json  map', { fontSize: '32px', fill: '#555' });
+        var DynamicExampleText = this.add.text(16, 500, 'Hit E to enter Dynamic Example Map', { fontSize: '32px', fill: '#555' });
 
         this.input.keyboard.on('keyup_T', (event) => {
             //console.log('keyup_T')
@@ -71,6 +72,10 @@ class Example1 extends Phaser.Scene {
         this.input.keyboard.on('keyup_J', (event) =>{ 
                 this.input.stopPropagation();
                 this.scene.switch("TileJson");
+            });
+        this.input.keyboard.on('keyup_E', (event) =>{ 
+                this.input.stopPropagation();
+                this.scene.switch("DynamicExample");
             });
         
     }
