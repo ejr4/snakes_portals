@@ -10,7 +10,7 @@ class TileJson extends Phaser.Scene {
     }
 
     create ()
-    {
+    {   var controls;
         var map = this.make.tilemap({ key: 'map' });
 
         // The first parameter is the name of the tileset in Tiled and the second parameter is the key

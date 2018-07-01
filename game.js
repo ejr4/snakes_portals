@@ -8,7 +8,7 @@ var config = {
             gravity: {y : 200}
         }
     },
-    scene: [ Example1 , Example2, Example3, Tile100, Mario, Tile200, TileJson, DynamicExample]
+    scene: [ Example1 , Example2, Example3, Tile100, Mario, Tile200, TileJson]
 };
 
 var game = new Phaser.Game(config);

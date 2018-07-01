@@ -5,7 +5,7 @@ class DynamicExample extends Phaser.Scene {
         // var culled = 0;
         //var tilemap;
     
-        //var time = 0;
+        var time = 0;
 
     }
     preload ()
