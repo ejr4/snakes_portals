@@ -54,6 +54,11 @@ class Example1 extends Phaser.Scene {
                 this.scene.switch("Example3");
             }
         });
+        this.input.keyboard.on('keyup_M', (event) =>{ 
+                this.input.stopPropagation();
+                this.scene.switch("Mario");
+            });
+        
     }
 
     update(delta) {

@@ -1,30 +1,24 @@
 class Mario extends Phaser.Scene {
     constructor() {
-        super({key:"Mario"});
+        super({key:"Mario",
+        width: 11 * 16, // Number of tiles * size of the tile
+        height: 10 * 16,
+        zoom: 4,
+        
+        pixelArt: true,});// prolly not here
     }
 
-var config = {
-    type: Phaser.AUTO,
-    width: 11 * 16, // Number of tiles * size of the tile
-    height: 10 * 16,
-    zoom: 4,
-    parent: 'phaser-example',
-    pixelArt: true,
-    scene: {
-        preload: preload,
-        create: create
-    }
-};
 
-var game = new Phaser.Game(config);
 
-function preload ()
+
+ preload ()
 {
-    this.load.image('mario-tiles', 'assets/tilemaps/tiles/super-mario.png');
+    this.load.image('mario-tiles', 'assets/super-mario.png');
 }
 
-    function create ()
+ create ()
     {
+       
         // Load a map from a 2D array of tile indices
         var level = [
         [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
