@@ -1,35 +1,26 @@
-class Example1 extends Phaser.Scene {
+class Tile100 extends Phaser.Scene {
     constructor() {
-        super({key:"Example1"});
+        super({key:"Tile100"});
     }
     preload() {
         this.load.image('sun', 'assets/sun.jpg');
     }
     create() {
         this.image = this.add.image(400,300,'sun');
-        var score = 0;
-        var scoreText;
-        var kshhText;
-        scoreText = this.add.text(16, 16, 'Welcome to Snakes.  Hit T to enter map', { fontSize: '32px', fill: '#555' });
+        var repeatText;
+        var repeatCounter = 0;
+        var mainText = this.add.text(16, 16, 'Welcome to Snakes.  Hit T to repeat', { fontSize: '32px', fill: '#555' });
         this.input.keyboard.on('keyup_T', (event) => {
-            //console.log('keyup_T')
-            kshhText = this.add.text(16, 128, 'kShKshKsH a la strider&c', { fontSize: '32px', fill: '#444' });
-            this.scene.switch("Tile100");
-
+            repeatCounter++;
+            //scoreText.setText('Score: ' + score);
+            repeatText = this.add.text(16 + repeatCounter, 128 + 4*repeatCounter, 'it repeats it ...', { fontSize: '32px', fill: '#F00' }); 
         });
-
+        
 
         this.input.keyboard.on('keyup_D', (event) => {
             //console.log('keyup_D registered');
             this.image.x += 20;
-        },this);  /// 'this' conserves context per bro
-        /// es6 problem?  the following does not work.  
-        // this.input.keyboard.on('keyup_D', function(event) {
-        //     console.log('keyup_D registered');
-        //     this.image.x += 20;
-        // });
-
-        this.key_A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        },this);  /// 'this' conserves context 
 
         this.input.on('pointerdown', (event) => {
             this.image.x = event.x;
@@ -57,7 +48,7 @@ class Example1 extends Phaser.Scene {
     }
 
     update(delta) {
-        if(this.key_A.isDown)
-        this.image.x--;
-    }/// this is polling.  per frame
+        
+    }
+      
 }
