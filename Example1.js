@@ -10,10 +10,15 @@ class Example1 extends Phaser.Scene {
         var score = 0;
         var scoreText;
         var kshhText;
-        scoreText = this.add.text(16, 16, 'Welcome to Snakes.  Hit T to enter map', { fontSize: '32px', fill: '#555' });
+        var mapText = this.add.text(16, 64, 'Welcome to Snakes.  Hit T to enter Tile100 map', { fontSize: '32px', fill: '#555' });
+
+        var MarioText = this.add.text(16, 96, 'Hit M to enter Mario map', { fontSize: '32px', fill: '#555' });
+
+        var tile200Text = this.add.text(16, 128, 'Hit N to enter movement tile map 200', { fontSize: '32px', fill: '#555' });
+
         this.input.keyboard.on('keyup_T', (event) => {
             //console.log('keyup_T')
-            kshhText = this.add.text(16, 128, 'kShKshKsH a la strider&c', { fontSize: '32px', fill: '#444' });
+            kshhText = this.add.text(400, 255, 'kShKshKsH a la strider& this needs to delay and audio', { fontSize: '32px', fill: '#444' });
             this.scene.switch("Tile100");
 
         });
@@ -57,6 +62,10 @@ class Example1 extends Phaser.Scene {
         this.input.keyboard.on('keyup_M', (event) =>{ 
                 this.input.stopPropagation();
                 this.scene.switch("Mario");
+            });
+        this.input.keyboard.on('keyup_N', (event) =>{ 
+                this.input.stopPropagation();
+                this.scene.switch("Tile200");
             });
         
     }

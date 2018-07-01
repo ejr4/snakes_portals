@@ -4,19 +4,15 @@ class Mario extends Phaser.Scene {
         width: 11 * 16, // Number of tiles * size of the tile
         height: 10 * 16,
         zoom: 4,
-        
         pixelArt: true,});// prolly not here
     }
 
-
-
-
- preload ()
+preload ()
 {
     this.load.image('mario-tiles', 'assets/super-mario.png');
 }
 
- create ()
+create ()
     {
        
         // Load a map from a 2D array of tile indices
