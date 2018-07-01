@@ -1,6 +1,8 @@
 class TileJson extends Phaser.Scene { 
     constructor() {
         super({key:"TileJson"});
+        this.controls;
+        
     }
 
     preload ()
@@ -10,7 +12,7 @@ class TileJson extends Phaser.Scene {
     }
 
     create ()
-    {   var controls;
+    {   
         var map = this.make.tilemap({ key: 'map' });
 
         // The first parameter is the name of the tileset in Tiled and the second parameter is the key
@@ -32,7 +34,7 @@ class TileJson extends Phaser.Scene {
             down: cursors.down,
             speed: 0.5
         };
-        controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+        this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
 
         var help = this.add.text(16, 16, 'Arrow keys to scroll', {
             fontSize: '18px',
@@ -45,6 +47,6 @@ class TileJson extends Phaser.Scene {
 
     update (time, delta)
     {
-        controls.update(delta);
+        this.controls.update(delta);
     }
 }

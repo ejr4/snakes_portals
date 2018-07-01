@@ -2,10 +2,11 @@ class DynamicExample extends Phaser.Scene {
     
     constructor() {
         super({key:"DynamicExample"});
-        // var culled = 0;
+        // var this.culled = 0;
         //var tilemap;
     
-        var time = 0;
+       this.time;
+       this.culled;
 
     }
     preload ()
@@ -18,8 +19,8 @@ class DynamicExample extends Phaser.Scene {
      create ()
     {
         
-        var culled = 0;
-        var time = 0;
+        this.culled = 0;
+        this.time = 0;
         var rows = game.cache.text.get('map').split('\n');
         var mapWidth = rows[0].split(',').length;
         var mapHeight = rows.length;
@@ -37,21 +38,21 @@ class DynamicExample extends Phaser.Scene {
             }
         }
         var tilemap = this.add.tilemap(mapData, 0, 0, tileSize, tileSize, mapWidth, mapHeight, 0, 'image');
-        culled = this.add.bitmapText(0, 0, 'nokia16', '');
+        this.culled = this.add.bitmapText(0, 0, 'nokia16', '');
         tilemap.scrollFactorX = 0.5;
-        culled.scrollFactorX = 0.0;
-        culled.scrollFactorY = 0.0;
+        this.culled.scrollFactorX = 0.0;
+        this.culled.scrollFactorY = 0.0;
     }
     
      update ()
     {
         
-        this.cameras.main.scrollX = (200 + Math.cos(time) * 200)|0;
-        this.cameras.main.scrollY = (500 + Math.sin(time) * 500)|0;
+        this.cameras.main.scrollX = (200 + Math.cos(this.time) * 200)|0;
+        this.cameras.main.scrollY = (500 + Math.sin(this.time) * 500)|0;
     
-        culled.setText('Total Tiles: ' + tilemap.getTotalTileCount(this.cameras.main) + '\nVisible Tiles: ' + tilemap.getVisibleTileCount(this.cameras.main));
+        this.culled.setText('Total Tiles: ' + tilemap.getTotalTileCount(this.cameras.main) + '\nVisible Tiles: ' + tilemap.getVisibleTileCount(this.cameras.main));
     
-        time += 0.01;
+        this.time += 0.01;
     }
     
 
