@@ -8,7 +8,7 @@ class ProgramTiles extends Phaser.Scene {
         this.layer;
     }
     preload(){
-        this.load.image('tiles', 'assets/drawtiles-spaced.png');
+        this.load.image('tiles', 'assets/drawtiles-longer.png');
     }
 
     create() {
@@ -25,7 +25,7 @@ class ProgramTiles extends Phaser.Scene {
         // var layer = map.createStaticLayer(0, tileset, 0, 0);
         /////////// above via Tile200. 
         //////////// below via Mario
-        this.map = this.make.tilemap({ data: this.tiles, tileWidth: 16, tileHeight: 16 });
+        this.map = this.make.tilemap({ data: this.tiles, tileWidth: 32, tileHeight: 32 });
         this.tileset = this.map.addTilesetImage('tiles',null,32,32,1,2);
         this.layer = this.map.createStaticLayer(0, this.tileset, 0, 0);
     }
