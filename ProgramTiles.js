@@ -23,7 +23,7 @@ class ProgramTiles extends Phaser.Scene {
         var helpTextG = this.add.text(640 + 10, 192, 'G - snake \n angle up', { fontSize: '16px', fill: '#D54' });
         var helpTextY = this.add.text(640 + 10, 240, 'Y - snake256 \n angle up', { fontSize: '16px', fill: '#E2E' });
         var helpTextU = this.add.text(640 + 10, 300, 'U - snake256 \n angle up', { fontSize: '16px', fill: '#19A' });
-        var helpTextY = this.add.text(640 + 10, 300, 'Y - snakeY \n angle up', { fontSize: '16px', fill: '#19A' });
+        var helpTextY = this.add.text(640 + 10, 360, 'Y - snakeY \n angle up', { fontSize: '16px', fill: '#19A' });
 
        this.tiles = [];
         for(let i = 0; i < 10; i++){
@@ -47,30 +47,39 @@ class ProgramTiles extends Phaser.Scene {
         snake256.displayOriginX = 0;
         snake256.displayOriginY = 0;
         //
-        var snakeY = this.add.image(64*4 + 32, 64*3 + 32, 'snakeY'); 
+        var snakeY = this.add.image(64*4 + 32, 64*7 + 32, 'snakeY'); 
         snakeY.originX = 0;
         snakeY.originY = 0;
         snakeY.displayOriginX = 0;
-        snakeY.displayOriginY = 0;
+        //snakeY.displayOriginY = 0;
+        function snakeMake(tailTileX,tailTileY,headTileX,headTileY,snake) { // at first will only work with brown snake
+            snake.x = 64 * tailTileX + 32;
+            snake.y = 64 * tailTileY + 32;
+            let angle =180 *  Math.atan2(headTileY- tailTileY,headTileX - tailTileX)/Math.PI;
+            snake.angle = angle;
+            let squareSum = (headTileX - tailTileX)*(headTileX - tailTileX) + (headTileY- tailTileY) * (headTileY- tailTileY) ;
+            snake.scaleX = Math.sqrt(squareSum) / 4; // n.b. scaled to tiles
+        }
+        snakeMake(3,3,9,9,snakeY);
 
         // Left
         this.input.keyboard.on('keydown_A', function (event) {
-                player.x -= 32;
+                player.x -= 64;
                 player.angle = 180;
             });
         //  Right
         this.input.keyboard.on('keydown_D', function (event) {
-                player.x += 32;
+                player.x += 64;
                 player.angle = 0;
         });
         //  Up
         this.input.keyboard.on('keydown_W', function (event) {
-                player.y -= 32;
+                player.y -= 64;
                 player.angle = -90;
         });
         //  Down
         this.input.keyboard.on('keydown_S', function (event) {
-                player.y += 32;
+                player.y += 64;
                 player.angle = 90;
         });
         //  Snake2 rotate up
@@ -95,6 +104,11 @@ class ProgramTiles extends Phaser.Scene {
         //  Snake scaleX down
         this.input.keyboard.on('keydown_M', function (event) {
                 snake.scaleX -= .05;
+                
+        });
+        //  SnakeY head moves up 
+        this.input.keyboard.on('keydown_O', function (event) {
+            //snakeMake(; this'll be maybe wanting snakes as coords. in tiles.  
                 
         });
         this.player2 = player2;
