@@ -13,9 +13,14 @@ class ProgramTiles extends Phaser.Scene {
         this.load.image('blueguy', 'assets/blueguy.png');
         this.load.image('ladder', 'assets/ladder.png');
         this.load.image('snake', 'assets/snake.png');
+        this.load.image('snake256', 'assets/snake256.png');
     }
 
     create() {
+        var helpText = this.add.text(640 + 10, 64, 'L - snake \n scaleX up', { fontSize: '16px', fill: '#909' });
+        var helpText = this.add.text(640 + 10, 128, 'M - snake \n scaleX down', { fontSize: '16px', fill: '#862' });
+        var helpText = this.add.text(640 + 10, 192, 'G - snake \n angle up', { fontSize: '16px', fill: '#D54' });
+
        this.tiles = [];
         for(let i = 0; i < 10; i++){
             let row = [];
@@ -24,19 +29,55 @@ class ProgramTiles extends Phaser.Scene {
             }
             this.tiles.push(row);
         }
-        // var map = this.make.tilemap({ key: 'map', tileWidth: 32, tileHeight: 32 });
-        // var tileset = map.addTilesetImage('tiles', null, 32, 32, 1, 2);
-        // var layer = map.createStaticLayer(0, tileset, 0, 0);
-        /////////// above via Tile200. 
-        //////////// below via Mario
+        
         this.map = this.make.tilemap({ data: this.tiles, tileWidth: 64, tileHeight: 64 });// was 32
         this.tileset = this.map.addTilesetImage('tiles',null,64,64,2,4);//was 32,32,1,2
         this.layer = this.map.createStaticLayer(0, this.tileset,0, 0);
-        this.player = this.add.image(32+16, 32+16, 'redguy');// was 'var'
-        this.player2 = this.add.image(48, 48, 'blueguy');// 
+        var player = this.add.image(32+16, 32+16, 'redguy');// was 'var'
+        var player2 = this.add.image(32*10 + 48, 320 + 48, 'blueguy');// 
+        var ladder = this.add.image(32*10 + 48, 320 + 64 + 48, 'ladder');// 
+        var snake = this.add.image(32*2 + 48, 320 + 48, 'snake');// 
+
+        // Left
+        this.input.keyboard.on('keydown_A', function (event) {
+                player.x -= 32;
+                player.angle = 180;
+            });
+        //  Right
+        this.input.keyboard.on('keydown_D', function (event) {
+                player.x += 32;
+                player.angle = 0;
+        });
+        //  Up
+        this.input.keyboard.on('keydown_W', function (event) {
+                player.y -= 32;
+                player.angle = -90;
+        });
+        //  Down
+        this.input.keyboard.on('keydown_S', function (event) {
+                player.y += 32;
+                player.angle = 90;
+        });
+        //  Snake rotate up
+        this.input.keyboard.on('keydown_G', function (event) {
+                snake.angle += 22.5;
+                
+        });
+        //  Snake scaleX up
+        this.input.keyboard.on('keydown_L', function (event) {
+                snake.scaleX += .05;
+                
+        });
+        //  Snake scaleX down
+        this.input.keyboard.on('keydown_M', function (event) {
+                snake.scaleX -= .05;
+                
+        });
+        this.player2 = player2;
     }
 
     update(){
+        this.player2.angle ++;
 
     }
 
