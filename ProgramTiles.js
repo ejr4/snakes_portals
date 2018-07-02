@@ -42,6 +42,9 @@ class ProgramTiles extends Phaser.Scene {
         var ladder = this.add.image(32*10 + 48, 320 + 64 + 48, 'ladder');// 
         var snake = this.add.image(32*2 + 48, 320 + 48, 'snake');// 
         var snake256 = this.add.image(64*4 + 32, 64*3 + 32, 'snake256');// 
+        // tint test
+        snake256.setTint(0x113344);
+        
         snake256.originX = 0;
         snake256.originY = 0;
         snake256.displayOriginX = 0;
@@ -59,6 +62,8 @@ class ProgramTiles extends Phaser.Scene {
             snake.angle = angle;
             let squareSum = (headTileX - tailTileX)*(headTileX - tailTileX) + (headTileY- tailTileY) * (headTileY- tailTileY) ;
             snake.scaleX = Math.sqrt(squareSum) / 4; // n.b. scaled to tiles
+            // tint test:
+            snake.setTint(0xDE2020);
         }
         snakeMake(3,3,9,9,snakeY);
 
