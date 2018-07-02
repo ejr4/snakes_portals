@@ -16,16 +16,18 @@ class ProgramTiles extends Phaser.Scene {
         this.load.image('snake256', 'assets/snake256.png');
         this.load.image('snakeY', 'assets/snakeY.png');
         this.load.image('glassTile', 'assets/glassTile.png');
+        this.load.image('soldier', 'assets/soldier.png');
     }
 
     create() {
+        // text instructions
         var helpTextL = this.add.text(640 + 10, 64, 'L - snake \n scaleX up', { fontSize: '16px', fill: '#909' });
         var helpTextM = this.add.text(640 + 10, 128, 'M - snake \n scaleX down', { fontSize: '16px', fill: '#862' });
         var helpTextG = this.add.text(640 + 10, 192, 'G - snake \n angle up', { fontSize: '16px', fill: '#D54' });
         var helpTextY = this.add.text(640 + 10, 240, 'Y - snake256 \n angle up', { fontSize: '16px', fill: '#E2E' });
         var helpTextU = this.add.text(640 + 10, 300, 'U - snake256 \n angle up', { fontSize: '16px', fill: '#19A' });
         var helpTextY = this.add.text(640 + 10, 360, 'Y - snakeY \n angle up', { fontSize: '16px', fill: '#19A' });
-
+        // initialize map
        this.tiles = [];
         for(let i = 0; i < 10; i++){
             let row = [];
@@ -61,6 +63,13 @@ class ProgramTiles extends Phaser.Scene {
         var glassTiles = this.physics.add.staticGroup();
         var red = glassTiles.create(64*6 + 16, 64*2 + 16,'glassTile').setTint(0xDE2020).setAlpha(1,.5,.5,0); // '.setInteractive()' may be useful
         var darkerblue = glassTiles.create(64*5 + 32 + 16, 64*2 + 32 + 16,'glassTile').setTint(0x6C1A91).setAlpha(1,.7,.7,0.2); // '.setInteractive()' may be useful
+
+        // soldiers group
+        var soldiers = this.physics.add.group();
+        var loneMarcher = soldiers.create(64*9 + 48, 64*8 + 48,'soldier');
+        
+
+
         //snakes group
         var snakeGroup = this.physics.add.staticGroup();
         function snakeCreate (tX,tY,hX,hY) {
@@ -73,7 +82,7 @@ class ProgramTiles extends Phaser.Scene {
         snakePlace(secondSnake,...snakeCoords(secondSnake)); 
         snakePlace(firstSnake,...snakeCoords(firstSnake)); 
 
-        //mopre snake helpers
+        //more snake helpers
         function snakePlace(snake,tailTileX,tailTileY,headTileX,headTileY) { // at first will only work with brown snake
             snake.x = 64 * tailTileX + 32;
             snake.y = 64 * tailTileY + 32;
@@ -140,6 +149,11 @@ class ProgramTiles extends Phaser.Scene {
             firstSnake.setData('headX' , firstSnake.getData( 'headX') + 1 );  
             snakePlace(firstSnake,...snakeCoords(firstSnake));
                 
+        });
+        //  loneSoldier marches left
+        this.input.keyboard.on('keydown_B', function (event) {
+            //snakePlace(; this'll be maybe wanting snakes as coords. in tiles.
+            moveTo(loneMarcher,0,64*8 + 48,64);    // does nothing.
         });
         this.player2 = player2;
     }

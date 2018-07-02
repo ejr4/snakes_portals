@@ -5,7 +5,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: {y : 200}
+            gravity: null // {y : 200}
         }
     },
     scene: [ProgramTiles, Example1 , Example2, Example3, Tile100, Mario, Tile200, TileJson,   ] // order of appearance 
