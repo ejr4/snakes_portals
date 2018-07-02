@@ -17,7 +17,7 @@ class Example1 extends Phaser.Scene {
         var tile200Text = this.add.text(16, 128, 'Hit N to enter movement tile map 200', { fontSize: '32px', fill: '#555' });
         var tileJsonText = this.add.text(16, 176, 'Hit J to enter Json  map', { fontSize: '32px', fill: '#555' });
         var ProgramTileText = this.add.text(16, 480, 'Hit X to enter ProgramTiles  map', { fontSize: '32px', fill: '#11F' });
-        //var DynamicExampleText = this.add.text(16, 500, 'Hit E to enter Dynamic Example Map', { fontSize: '32px', fill: '#555' });
+        //var DynamicExampleText = this.add.text(16, 540, 'Hit E to enter Dynamic Example Map', { fontSize: '32px', fill: '#777' });
 
         this.input.keyboard.on('keyup_T', (event) => {
             //console.log('keyup_T')

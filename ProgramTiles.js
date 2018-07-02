@@ -9,6 +9,10 @@ class ProgramTiles extends Phaser.Scene {
     }
     preload(){
         this.load.image('tiles', 'assets/drawtiles-longer64.png');//100 tiles across, first is ignored
+        this.load.image('redguy', 'assets/redguy.png');
+        this.load.image('blueguy', 'assets/blueguy.png');
+        this.load.image('ladder', 'assets/ladder.png');
+        this.load.image('snake', 'assets/snake.png');
     }
 
     create() {
@@ -27,7 +31,9 @@ class ProgramTiles extends Phaser.Scene {
         //////////// below via Mario
         this.map = this.make.tilemap({ data: this.tiles, tileWidth: 64, tileHeight: 64 });// was 32
         this.tileset = this.map.addTilesetImage('tiles',null,64,64,2,4);//was 32,32,1,2
-        this.layer = this.map.createStaticLayer(0, this.tileset,0, 0);//did nothing. was 0,0
+        this.layer = this.map.createStaticLayer(0, this.tileset,0, 0);
+        this.player = this.add.image(32+16, 32+16, 'redguy');// was 'var'
+        this.player2 = this.add.image(48, 48, 'blueguy');// 
     }
 
     update(){

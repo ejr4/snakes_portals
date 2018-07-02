@@ -8,7 +8,7 @@ var config = {
             gravity: {y : 200}
         }
     },
-    scene: [ Example1 , Example2, Example3, Tile100, Mario, Tile200, TileJson, ProgramTiles]
+    scene: [ProgramTiles, Example1 , Example2, Example3, Tile100, Mario, Tile200, TileJson,   ] // order of appearance 
 };
 
 var game = new Phaser.Game(config);
