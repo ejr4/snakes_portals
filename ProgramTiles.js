@@ -56,7 +56,25 @@ class ProgramTiles extends Phaser.Scene {
         snakeY.originY = 0;
         snakeY.displayOriginX = 0;
         //snakeY.displayOriginY = 0;
-        function snakeMake(snake,tailTileX,tailTileY,headTileX,headTileY) { // at first will only work with brown snake
+        snakePlace(snakeY,3,3,9,9);
+        //glassTiles
+        var glassTiles = this.physics.add.staticGroup();
+        var red = glassTiles.create(64*6 + 16, 64*2 + 16,'glassTile').setTint(0xDE2020).setAlpha(1,.5,.5,0); // '.setInteractive()' may be useful
+        var darkerblue = glassTiles.create(64*5 + 32 + 16, 64*2 + 32 + 16,'glassTile').setTint(0x6C1A91).setAlpha(1,.7,.7,0.2); // '.setInteractive()' may be useful
+        //snakes group
+        var snakeGroup = this.physics.add.staticGroup();
+        function snakeCreate (tX,tY,hX,hY) {
+            return snakeGroup.create(null,null,'snakeY').setOrigin(0, 0.5).setData({headX: hX, headY: hY, tailX: tX, tailY: tY });
+        }
+        var firstSnake = snakeGroup.create(null,null,'snakeY').setOrigin(0, 0.5).setData({headX: 6, headY: 4, tailX: 1, tailY: 1 });
+        var secondSnake = snakeCreate(5,2,7,7);
+
+        // see if it appears.
+        snakePlace(secondSnake,...snakeCoords(secondSnake)); 
+        snakePlace(firstSnake,...snakeCoords(firstSnake)); 
+
+        //mopre snake helpers
+        function snakePlace(snake,tailTileX,tailTileY,headTileX,headTileY) { // at first will only work with brown snake
             snake.x = 64 * tailTileX + 32;
             snake.y = 64 * tailTileY + 32;
             let rotation =Math.atan2(headTileY- tailTileY,headTileX - tailTileX);
@@ -64,18 +82,13 @@ class ProgramTiles extends Phaser.Scene {
             let squareSum = (headTileX - tailTileX)*(headTileX - tailTileX) + (headTileY- tailTileY) * (headTileY- tailTileY) ;
             snake.scaleX = Math.sqrt(squareSum) / 4; // n.b. scaled to tiles
             // tint test:
-            snake.setTint(0xDE2020);
+            //snake.setTint(0xDE2020);
         }
-        snakeMake(snakeY,3,3,9,9);
-        //glassTiles
-            var glassTiles = this.physics.add.staticGroup();
-            var red = glassTiles.create(64*6 + 16, 64*2 + 16,'glassTile').setTint(0xDE2020).setAlpha(1,.5,.5,0); // '.setInteractive()' may be useful
-            var darkerblue = glassTiles.create(64*5 + 32 + 16, 64*2 + 32 + 16,'glassTile').setTint(0x6C1A91).setAlpha(1,.7,.7,0.2); // '.setInteractive()' may be useful
-        //snakes group
-            var snakeGroup = this.physics.add.staticGroup();
-            var firstSnake = snakeGroup.create(null,null,'snakeY').setData({headX: 1, headY: 1, tailX: 6, tailY: 4 });
-            // see if it appears.
-            snakeMake(firstSnake,firstSnake.getData('headX'),firstSnake.getData('headY'),firstSnake.getData('tailX'),firstSnake.getData('tailY'));
+        function snakeCoords(snake){
+            return [snake.getData('tailX'),snake.getData('tailY'),snake.getData('headX'),snake.getData('headY')]
+        }
+        
+
 
         // Left
         this.input.keyboard.on('keydown_A', function (event) {
@@ -121,9 +134,11 @@ class ProgramTiles extends Phaser.Scene {
                 snake.scaleX -= .05;
                 
         });
-        //  SnakeY head moves up 
-        this.input.keyboard.on('keydown_O', function (event) {
-            //snakeMake(; this'll be maybe wanting snakes as coords. in tiles.  
+        //  firstSnake head moves right 
+        this.input.keyboard.on('keydown_R', function (event) {
+            //snakePlace(; this'll be maybe wanting snakes as coords. in tiles.
+            firstSnake.setData('headX' , firstSnake.getData( 'headX') + 1 );  
+            snakePlace(firstSnake,...snakeCoords(firstSnake));
                 
         });
         this.player2 = player2;
