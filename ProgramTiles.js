@@ -26,7 +26,7 @@ class ProgramTiles extends Phaser.Scene {
         var helpTextG = this.add.text(640 + 10, 192, 'G - snake \n angle up', { fontSize: '16px', fill: '#D54' });
         var helpTextY = this.add.text(640 + 10, 240, 'Y - snake256 \n angle up', { fontSize: '16px', fill: '#E2E' });
         var helpTextU = this.add.text(640 + 10, 300, 'U - snake256 \n angle up', { fontSize: '16px', fill: '#19A' });
-        var helpTextY = this.add.text(640 + 10, 360, 'Y - snakeY \n angle up', { fontSize: '16px', fill: '#19A' });
+        var helpTextY = this.add.text(640 + 10, 360, 'Y - soldierMake function', { fontSize: '16px', fill: '#19A' });
         // initialize map
        this.tiles = [];
         for(let i = 0; i < 10; i++){
@@ -65,10 +65,19 @@ class ProgramTiles extends Phaser.Scene {
         var darkerblue = glassTiles.create(64*5 + 32 + 16, 64*2 + 32 + 16,'glassTile').setTint(0x6C1A91).setAlpha(1,.7,.7,0.2); // '.setInteractive()' may be useful
 
         // soldiers group
-        var soldiers = this.physics.add.group(null,{gravityY : 0});
+        // var soldiers = this.physics.add.group(null,{gravityY : 0});
+        var soldiers = this.physics.add.group();
         var loneMarcher = soldiers.create(64*9 + 48, 64*5 + 48,'soldier');
-        loneMarcher.setVelocityY(-300);
-        loneMarcher.setGravityY(0); // no effect
+        var soldierArray = [];
+        function soldierMake (tX,tY){
+            let newSoldier = soldiers.create(64 * tX + 48 ,64 * tY + 48,'soldier');
+            newSoldier.setVelocityX(-60);
+            soldierArray.push(newSoldier);  //  not sure about this.
+        } // try once:
+        // or soldierArray.push soldierMake ..?
+        var testMarcher = soldierMake(9,4);
+        loneMarcher.setVelocityX(-60);
+        //loneMarcher.setGravityY(0); // no effect
         //loneMarcher.setAllowGravity(false);// no effect
         //loneMarcher.setGarbigoo(4); // error
 
@@ -101,45 +110,8 @@ class ProgramTiles extends Phaser.Scene {
         
 
 
-        // Left
-        this.input.keyboard.on('keydown_A', function (event) {
-                player.x -= 64;
-                player.angle = 180;
-            });
-        //  Right
-        this.input.keyboard.on('keydown_D', function (event) {
-                player.x += 64;
-                player.angle = 0;
-        });
-        //  Up
-        this.input.keyboard.on('keydown_W', function (event) {
-                player.y -= 64;
-                player.angle = -90;
-        });
-        //  Down
-        this.input.keyboard.on('keydown_S', function (event) {
-                player.y += 64;
-                player.angle = 90;
-        });
-        //  Snake2 rotate up
-        //  Snake rotate up
-        this.input.keyboard.on('keydown_G', function (event) {
-                snake.angle += 22.5;
-                
-        });
-        this.input.keyboard.on('keydown_Y', function (event) {
-                snakeY.angle += 3;
-                
-        });
-        this.input.keyboard.on('keydown_U', function (event) {
-                snake256.angle += 22.5;
-                
-        });
-        //  Snake scaleX up
-        this.input.keyboard.on('keydown_L', function (event) {
-                snake.scaleX += .05;
-                
-        });
+        
+        
         //  Snake scaleX down
         this.input.keyboard.on('keydown_M', function (event) {
                 snake.scaleX -= .05;
@@ -153,16 +125,20 @@ class ProgramTiles extends Phaser.Scene {
                 
         });
         //  loneSoldier marches left
-        this.input.keyboard.on('keydown_B', function (event) {
+        this.input.keyboard.on('keydown_Y', function (event) {
             //snakePlace(; this'll be maybe wanting snakes as coords. in tiles.
-            moveTo(loneMarcher,0,64*8 + 48,64);    // does nothing.
+            soldierMake(9,8);  
         });
         this.player2 = player2;
     }
 
     update(){
         this.player2.angle ++;
-
+        //testMarcher.angle++;
+        if (this.time%500 == 0)
+        {
+            soldierMake(7,3);
+        }
     }
 
 }
