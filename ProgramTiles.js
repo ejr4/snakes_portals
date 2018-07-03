@@ -67,16 +67,16 @@ class ProgramTiles extends Phaser.Scene {
         // soldiers group
         // var soldiers = this.physics.add.group(null,{gravityY : 0});
         var soldiers = this.physics.add.group();
-        var loneMarcher = soldiers.create(64*9 + 48, 64*5 + 48,'soldier');
+        this.loneMarcher = soldiers.create(64*9 + 48, 64*5 + 48,'soldier');
         var soldierArray = [];
-        function soldierMake (tX,tY){
+        this.soldierMake = function (tX,tY){
             let newSoldier = soldiers.create(64 * tX + 48 ,64 * tY + 48,'soldier');
             newSoldier.setVelocityX(-60);
             soldierArray.push(newSoldier);  //  not sure about this.
         } // try once:
-        // or soldierArray.push soldierMake ..?
-        var testMarcher = soldierMake(9,4);
-        loneMarcher.setVelocityX(-60);
+        // or soldierArray.push this.soldierMake ..?
+        var testMarcher = this.soldierMake(9,4);
+        this.loneMarcher.setVelocityX(-60);
         //loneMarcher.setGravityY(0); // no effect
         //loneMarcher.setAllowGravity(false);// no effect
         //loneMarcher.setGarbigoo(4); // error
@@ -127,18 +127,27 @@ class ProgramTiles extends Phaser.Scene {
         //  loneSoldier marches left
         this.input.keyboard.on('keydown_Y', function (event) {
             //snakePlace(; this'll be maybe wanting snakes as coords. in tiles.
-            soldierMake(9,8);  
+            this.soldierMake(9,8);  
         });
         this.player2 = player2;
+       this.boundCheckWrap =  function(soldier) {
+            if(soldier.x < 0){
+               soldier.y -= 64;
+                soldier.x = 64*10 - 16;
+            }
+        }
     }
 
-    update(){
+    update(time,delta){
         this.player2.angle ++;
         //testMarcher.angle++;
-        if (this.time%500 == 0)
-        {
-            soldierMake(7,3);
-        }
+        // if (time > 10000)
+        // {
+        //      this.soldierMake(7,3);
+        //      time = 0;
+        // } // does nothing
+        
+        this.boundCheckWrap(this.loneMarcher);
     }
 
 }
