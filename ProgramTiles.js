@@ -65,10 +65,12 @@ class ProgramTiles extends Phaser.Scene {
         var darkerblue = glassTiles.create(64*5 + 32 + 16, 64*2 + 32 + 16,'glassTile').setTint(0x6C1A91).setAlpha(1,.7,.7,0.2); // '.setInteractive()' may be useful
 
         // soldiers group
-        var soldiers = this.physics.add.group();
-        var loneMarcher = soldiers.create(64*9 + 48, 64*8 + 48,'soldier');
-        
-
+        var soldiers = this.physics.add.group(null,{gravityY : 0});
+        var loneMarcher = soldiers.create(64*9 + 48, 64*5 + 48,'soldier');
+        loneMarcher.setVelocityY(-300);
+        loneMarcher.setGravityY(0); // no effect
+        //loneMarcher.setAllowGravity(false);// no effect
+        //loneMarcher.setGarbigoo(4); // error
 
         //snakes group
         var snakeGroup = this.physics.add.staticGroup();
