@@ -18,6 +18,7 @@ var Snakies = new Phaser.Class({
         this.marines;
         this.portals;
         this.timer;
+        this.loneMarine;
     },
 
     
@@ -58,37 +59,54 @@ var Snakies = new Phaser.Class({
         this.timer = 0;
 
         this.marines = this.physics.add.group({    
-            maxSize: 10,
+            // maxSize: 5,
             key: 'soldier'// ??
         });
         ///////////
+        this.loneMarine = this.marines.create(64 * 9 + 48 ,64 * 8 + 48,'soldier');
+        this.loneMarine.setVelocityX(-60);
+
+        // release manually for now with 'R'
+        this.input.keyboard.on('keydown_R', function (event) { 
+            //this.loneMarine.setVelocityX(-60);
+            console.log(this);
+        }, this);
+        ///////////////////////////
+
     },
    
 
     releaseMarine: function (tX,tY) 
     {
         this.timer = this.time.now + 1618;
-        //newMarine = this.marines.get(64*tX + 48,64*tY +  48);
+        //let newMarine = this.marines.get(64*tX + 48,64*tY +  48);
         let newMarine = this.marines.create(64 * tX + 48 ,64 * tY + 48,'soldier');
+        //this.marines.push(newMarine); // nope.
         newMarine.setVelocityX(-60);
         //console.log(newMarine.typeof());
-        console.log(newMarine.x);
+        //console.log(newMarine.x);
         // this.marines.children.each(function (marine) {
         //     console.log(marine.y);
         //marine.enableBody(false, 0, 0, true, true);
         // });
     },
 
+    //placeAtTile 
+    mapWrap: function(marine) {
+        if(marine && marine.x < 0){
+            marine.y -= 64;
+             marine.x = 64*10 - 16;
+         }
+    },
     
-
-    
-
     update: function ()
     {
-        if (this.time.now > this.timer) {
-            //console.log('updating');
-            this.releaseMarine(9,8);
-        }
+        // is buggy:
+        // if (this.time.now > this.timer) {
+        //     //console.log('updating');
+        //     this.releaseMarine(9,8);
+        // } 
+            this.mapWrap(this.loneMarine);
         //console.log('updating');
     }
 
