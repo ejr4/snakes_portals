@@ -69,11 +69,18 @@ class ProgramTiles extends Phaser.Scene {
         var soldiers = this.physics.add.group();
         this.loneMarcher = soldiers.create(64*9 + 48, 64*5 + 48,'soldier');
         var soldierArray = [];
+        this.soldierTimer = 0;
         this.soldierMake = function (tX,tY){
             let newSoldier = soldiers.create(64 * tX + 48 ,64 * tY + 48,'soldier');
             newSoldier.setVelocityX(-60);
+            this.soldierTimer = this.time.now + 1618;
             soldierArray.push(newSoldier);  //  not sure about this.
         } // try once:
+        this.soldierCheckTime = function() {
+            if (this.time.now > this.soldierTimer) {
+                this.soldierMake (9,8);
+            }
+        }
         // or soldierArray.push this.soldierMake ..?
         var testMarcher = this.soldierMake(9,4);
         this.loneMarcher.setVelocityX(-60);
@@ -127,7 +134,7 @@ class ProgramTiles extends Phaser.Scene {
         //  loneSoldier marches left
         this.input.keyboard.on('keydown_Y', function (event) {
             //snakePlace(; this'll be maybe wanting snakes as coords. in tiles.
-            this.soldierMake(9,8);  
+            this.soldierMake(9,7);  
         });
         this.player2 = player2;
        this.boundCheckWrap =  function(soldier) {
@@ -148,6 +155,7 @@ class ProgramTiles extends Phaser.Scene {
         // } // does nothing
         
         this.boundCheckWrap(this.loneMarcher);
+        this.soldierCheckTime();
     }
 
 }
