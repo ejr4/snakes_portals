@@ -20,6 +20,8 @@ var Snakies = new Phaser.Class({
         this.timer;
     },
 
+    
+
     preload: function ()
     {
        
@@ -55,81 +57,27 @@ var Snakies = new Phaser.Class({
         this.mapMake();
         this.timer = 0;
 
-        // create Marine Class, or place outside?
-        var Marine = new Phaser.Class({
-
-            Extends: Phaser.GameObjects.Image,
-
-            initialize:
-            
-            
-
-            setTimer: function ()
-            {
-                this.timer = this.time.now + 1618;
-    
-                this.setActive(true);
-                this.setVisible(true);
-            },
-
-            
-
-        });
-        this.marines = this.add.group({
-            classType: Marine,
+        this.marines = this.physics.add.group({    
             maxSize: 10,
-            runChildUpdate: true
+            key: 'soldier'// ??
         });
         ///////////
-        var Bullet = new Phaser.Class({
-
-            Extends: Phaser.GameObjects.Image,
-    
-            initialize:
-            // function Bullet (scene)
-            Bullet: function (scene)
-            {
-                Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-    
-                this.speed = Phaser.Math.GetSpeed(400, 1);
-            },
-    
-            fire: function (x, y)
-            {
-                this.setPosition(x, y - 50);
-    
-                this.setActive(true);
-                this.setVisible(true);
-            },
-    
-            update: function (time, delta)
-            {
-                this.y -= this.speed * delta;
-    
-                if (this.y < -50)
-                {
-                    this.setActive(false);
-                    this.setVisible(false);
-                }
-            }
-    
-        });
-    
-        bullets = this.add.group({
-            classType: Bullet,
-            maxSize: 10,
-            runChildUpdate: true
-        });
-    
-        ship = this.add.sprite(400, 500, 'ship').setDepth(1);
-    
-        cursors = this.input.keyboard.createCursorKeys();
-    
-        speed = Phaser.Math.GetSpeed(300, 1);
-
     },
+   
 
-    
+    releaseMarine: function (tX,tY) 
+    {
+        this.timer = this.time.now + 1618;
+        //newMarine = this.marines.get(64*tX + 48,64*tY +  48);
+        let newMarine = this.marines.create(64 * tX + 48 ,64 * tY + 48,'soldier');
+        newMarine.setVelocityX(-60);
+        //console.log(newMarine.typeof());
+        console.log(newMarine.x);
+        // this.marines.children.each(function (marine) {
+        //     console.log(marine.y);
+        //marine.enableBody(false, 0, 0, true, true);
+        // });
+    },
 
     
 
@@ -137,7 +85,11 @@ var Snakies = new Phaser.Class({
 
     update: function ()
     {
-        
+        if (this.time.now > this.timer) {
+            //console.log('updating');
+            this.releaseMarine(9,8);
+        }
+        //console.log('updating');
     }
 
 });
