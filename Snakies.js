@@ -14,14 +14,15 @@ var Snakies = new Phaser.Class({
         this.snakes;
         this.ladders;
         this.marines;
-        this.portals;
+        this.ppUps;
+        this.portalTiles;
         this.timer;
         this.loneMarine;
         this.firstLadderBottom;
         this.firstLadderTop;
         this.firstSnakeHead;
         this.firstSnakeTail;
-        this.firstPortal;
+        this.portalPowerUp;
         this.goingUp;
         this.goingDown;
         this.isWalking;
@@ -51,6 +52,7 @@ var Snakies = new Phaser.Class({
         this.load.image('blankTailHelper', 'assets/blankTailHelper.png');
         this.load.image('snakeEye', 'assets/snakeEye.png');
         this.load.image('ladderFoot', 'assets/ladderFoot.png');
+        this.load.image('portalTile', 'assets/portalTile.png');
     },
 
     mapMake: function() {
@@ -83,20 +85,22 @@ var Snakies = new Phaser.Class({
         this.snaketails = this.physics.add.group();
         this.laddertops = this.physics.add.group();
         this.ladderbottoms = this.physics.add.group();
-        this.portals = this.physics.add.group();
+        this.ppUps = this.physics.add.group();
         this.snakeEyes = this.physics.add.group();
         this.ladderFoot = this.physics.add.group();
         this.sTHelpers = this.physics.add.group();
+        this.portalTiles = this.physics.add.group();
         ///////////
         this.loneMarine = this.marines.create(64 * 9 + 48 ,64 * 8 + 48, 'soldier');
         
-        this.firstSnakeHead = this.snakeheads.create(64 * 1 + 32, 64 * 2 + 32, 'snakehead');
-        this.firstSnakeEye = this.snakeEyes.create(64 * 1 + 32, 64 * 2 + 30, 'snakeEye');
+        this.firstSnakeHead = this.snakeheads.create(64 * 1 + 32, 64 * 2 + 48, 'snakehead');
+        this.firstSnakeEye = this.snakeEyes.create(64 * 1 + 32, 64 * 2 + 48, 'snakeEye');
         this.firstSnakeTail = this.snaketails.create(64 * 1 + 32, 64 * 6 + 32, 'snaketail');
         //this.firstSTHelper = this.snaketails.create(64 * 1 + 32, 64 * 6 + 32, 'snaketail');
         this.firstLadderBottom = this.ladderbottoms.create(64 * 2 + 16, 64 * 8 + 48, 'ladderbottom');
         this.firstLadderTop = this.laddertops.create(64 * 7 + 32, 64 * 2 + 16, 'laddertop');
         this.firstLadderFoot = this.ladderFoot.create(2 * 64 + 6, 8 * 64 + 60, 'ladderFoot');
+        //this.firstPortalTile = this.portalTiles.create(10 * 64 -32, 10 * 64 - 32, 'portalTile');
         
 
         // release manually for now with 'R'
@@ -106,7 +110,7 @@ var Snakies = new Phaser.Class({
         }, this);
         /// tile placer
         this.input.keyboard.on('keydown_U', function (event) { 
-            this.placePortal(7,7);
+            this.placePortal(3,5);
         }, this);
         ///////////////////////////
         // overlaps are great ... if they work
@@ -116,13 +120,14 @@ var Snakies = new Phaser.Class({
         // this.physics.add.collider(this.loneMarine, this.firstSnakeTail, this.exclaimInDespair, null, this);
         //this.physics.add.overlap(this.loneMarine, this.firstLadderBottom, this.walkUp, null, this);
         // this.physics.add.overlap(this.loneMarine, this.firstLadderTop, this.walkLeft, null, this);
-        // this.physics.add.overlap(this.loneMarine, this.firstSnakeHead, this.slideDown, null, this);
+        //this.physics.add.overlap(this.loneMarine, this.firstSnakeHead, this.slideDown, null, this);
         //this.physics.add.overlap(this.loneMarine, this.firstSnakeTail, this.walkLeft, null, this);
-        this.physics.add.overlap(this.loneMarine, this.firstPortal, this.walkLeft, null, this);
-        this.physics.add.overlap(this.loneMarine, this.snakeEye, this.slideDown, null, this);
+        this.physics.add.overlap(this.loneMarine, this.portalPowerUp, this.walkLeft, null, this);
+        this.physics.add.overlap(this.loneMarine, this.snakeEyes, this.slideDown, null, this); // this could be SnakeEyes
         this.physics.add.overlap(this.loneMarine, this.ladderFoot, this.walkUp, null, this);
         // this.physics.add.overlap(this.loneMarine, this.firstSnakeHead, this.walkUp, null, this);
         // this.physics.add.overlap(this.loneMarine, this.firstSnakeTail, this.walkLeft, null, this);
+        this.physics.add.overlap(this.loneMarine, this.ppUps, this.collectPortal, null, this);
         console.log('post-create log ');
         
 
@@ -130,11 +135,30 @@ var Snakies = new Phaser.Class({
     exclaimInDespair: function(what,what) {
         console.log(what,what);
     },
+    collectPortal: function (marine, ppUp) 
+    {
+        ppUp.disableBody(true, true);
+        console.log('in collectPortal');
+        //setTimeout
+        //setTimeout(function(){
+            this.firstPortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'portalTile').setAlpha(0.2,0.1,0.3, 0.2);
+            //; }, 400);
+    },
     // reference:
     walkUp: function (marine, ladderBottom)
     {
-        console.log('walkUp');
-        this.physics.moveToObject(marine,this.firstLadderTop,140);
+        //console.log('walkUp');
+        this.goingUp = true;
+        this.physics.moveToObject(marine,this.firstLadderTop,160);
+        this.catchLine = this.firstLadderTop.y + 32;
+        
+    },
+    slideDown: function (marine, snakeHead)
+    {
+        console.log('slideDown');
+        this.goingDown = true;
+        this.physics.moveToObject(marine,this.firstSnakeTail,160);
+        this.catchLine = this.firstSnakeTail.y + 14;
         
     },
     walkLeft: function (marine, ladderBottom)
@@ -157,7 +181,7 @@ var Snakies = new Phaser.Class({
 
     //place portal tile  
     placePortal: function(tX,tY) {
-        this.firstPortal = this.portals.create(64 * tX + 32, 64 * tY + 16, 'glassTile').setTint(0x448FF1);
+        this.portalPowerUp = this.ppUps.create(64 * tX + 32, 64 * tY + 32, 'glassTile').setTint(0x448FF1).setAlpha(1,.6,.6, 0.2);
     },
     mapWrap: function(marine) {
         if(marine && marine.x < 0){
@@ -166,19 +190,28 @@ var Snakies = new Phaser.Class({
          }
     },
     
+    
     update: function ()
     {
             this.mapWrap(this.loneMarine);
+            if(this.portalPowerUp) {
+                this.portalPowerUp.angle++;
+            }
             // hackey ladder send
             //this.physics.overlap(this.loneMarine, this.firstLadderBottom, this.walkUp, null, this);
             // if (this.loneMarine.x <= 64*2 + 32 && this.loneMarine.y == 64 * 8 + 48)  
             //     //console.log('100 x crossed');
             //     this.physics.moveToObject(this.loneMarine,this.firstLadderTop);
             //     //this.physics.moveTo(this.loneMarine,  64 * 7 + 32, 64 * 2 + 48, 100 );
-            if(this.warping && this.loneMarine.y > this.warpCatchHeight) {
+            if(this.goingUp && this.loneMarine.y < this.catchLine) {
                 this.walkLeft();
+                this.goingUp = false;
             }
-    }
+            if(this.goingDown && this.loneMarine.y > this.catchLine) {
+                this.walkLeft();
+                this.goingDown = false;
+            }
+        }
 
 });
 

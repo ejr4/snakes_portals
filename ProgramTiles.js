@@ -142,9 +142,7 @@ class ProgramTiles extends Phaser.Scene {
     }
 
     update(time,delta){
-        this.player2.angle ++;
-      
-        
+        this.player2.angle ++;   
         this.boundCheckWrap(this.loneMarcher);
         this.soldierCheckTime();
     }
