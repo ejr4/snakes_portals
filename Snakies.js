@@ -82,13 +82,13 @@ var Snakies = new Phaser.Class({
         }, this);
         ///////////////////////////
         // colliders 
-        this.physics.add.collider(this.loneMarine, this.firstLadderBottom, this.walkAlong, null, this);
+        this.physics.add.overlap(this.loneMarine, this.firstLadderBottom, this.walkAlong, null, this);
 
     },
     // reference:
     walkAlong: function (marine, ladderBottom)
     {
-        moveTo(marine,this.firstLadderTop);
+        this.physics.moveToObject(marine,this.firstLadderTop);
         console.log('done collided');
     },
 
@@ -132,16 +132,17 @@ var Snakies = new Phaser.Class({
             //even hackier:
             if (this.loneMarine.x <= 64*2 + 32 && this.loneMarine.y == 64 * 8 + 48)  {
                 //console.log('100 x crossed');
-                this.physics.moveTo(this.loneMarine,  64 * 7 + 32, 64 * 2 + 48, 100 );
+                this.physics.moveToObject(this.loneMarine,this.firstLadderTop);
+                //this.physics.moveTo(this.loneMarine,  64 * 7 + 32, 64 * 2 + 48, 100 );
                // console.log(this.loneMarine.x);
             }
-            if (this.loneMarine.x > 64*2 + 32 && this.loneMarine.y < 64 * 2 + 48)  {
-                //console.log('100 x crossed');
-                this.loneMarine.setVelocityX(-100);
-                this.loneMarine.setVelocityY(0);
+            // if (this.loneMarine.x > 64*2 + 32 && this.loneMarine.y < 64 * 2 + 48)  {
+            //     //console.log('100 x crossed');
+            //     this.loneMarine.setVelocityX(-100);
+            //     this.loneMarine.setVelocityY(0);
 
-               // console.log(this.loneMarine.x);
-            }
+            //    // console.log(this.loneMarine.x);
+            // }
             
         //console.log('updating');
     }
