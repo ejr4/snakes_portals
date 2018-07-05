@@ -115,10 +115,6 @@ class ProgramTiles extends Phaser.Scene {
             return [snake.getData('tailX'),snake.getData('tailY'),snake.getData('headX'),snake.getData('headY')]
         }
         
-
-
-        
-        
         //  Snake scaleX down
         this.input.keyboard.on('keydown_M', function (event) {
                 snake.scaleX -= .05;
@@ -137,7 +133,7 @@ class ProgramTiles extends Phaser.Scene {
             this.soldierMake(9,7);  
         });
         this.player2 = player2;
-       this.boundCheckWrap =  function(soldier) {
+        this.boundCheckWrap =  function(soldier) {
             if(soldier.x < 0){
                soldier.y -= 64;
                 soldier.x = 64*10 - 16;
@@ -147,12 +143,7 @@ class ProgramTiles extends Phaser.Scene {
 
     update(time,delta){
         this.player2.angle ++;
-        //testMarcher.angle++;
-        // if (time > 10000)
-        // {
-        //      this.soldierMake(7,3);
-        //      time = 0;
-        // } // does nothing
+      
         
         this.boundCheckWrap(this.loneMarcher);
         this.soldierCheckTime();
