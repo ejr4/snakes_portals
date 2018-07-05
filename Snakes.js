@@ -32,10 +32,15 @@ var Snakes = new Phaser.Class({
         this.T;
         this.catchLine;
         this.instancePortalCentre;
+        this.snakeEye1;
         this.snakeEye2;
         this.snakeEye3;
+        this.snakeEye4;
+
+        this.ladderFoot1;
         this.ladderFoot2;
         this.ladderFoot3;
+        this.ladderFoot4;
         
 
     },
@@ -43,7 +48,8 @@ var Snakes = new Phaser.Class({
     preload: function ()
     {
        
-        this.load.image('tiles', 'assets/drawtiles-longer64.png');//100 tiles across, instance is ignored
+        //this.load.image('tiles', 'assets/drawtiles-longer64.png');
+        this.load.image('tiles', 'assets/drawtiles-numbered64.png');
         
         this.load.image('ladder', 'assets/ladder.png');
         this.load.image('snake', 'assets/snake.png');
@@ -61,6 +67,8 @@ var Snakes = new Phaser.Class({
         this.load.image('portalTile', 'assets/portalTile.png');
         this.load.image('portalCentre', 'assets/portalCentre.png');
         this.load.image('tile4', 'assets/tile4.png');
+        this.load.image('snake3', 'assets/snake3.png');
+        
     },
 
     mapMake: function() {
@@ -92,10 +100,7 @@ var Snakes = new Phaser.Class({
         this.marines = this.physics.add.group();
         this.snakes = this.add.group();
         this.ladders = this.add.group();
-        // this.snakeheads = this.physics.add.group();
-        // this.snaketails = this.physics.add.group();
-        // this.laddertops = this.physics.add.group();
-        // this.ladderbottoms = this.physics.add.group();
+      
         this.ppUps = this.physics.add.group();
         this.snakeEyes = this.physics.add.group();
         this.ladderFeet = this.physics.add.group();
@@ -105,16 +110,11 @@ var Snakes = new Phaser.Class({
         ///////////
         this.loneMarine = this.marines.create(32 ,64 * 9 + 48, 'marine');
         
-        // this.instanceSnakeHead = this.snakeheads.create(64 * 1 + 32, 64 * 2 + 48, 'snakehead');
-        // this.instanceSnakeTail = this.snaketails.create(64 * 1 + 32, 64 * 6 + 32, 'snaketail');
-        //this.instanceSTHelper = this.snaketails.create(64 * 1 + 32, 64 * 6 + 32, 'snaketail');
-        // this.instanceLadderBottom = this.ladderbottoms.create(64 * 2 + 16, 64 * 8 + 48, 'ladderbottom');
-        // this.instanceLadderTop = this.laddertops.create(64 * 7 + 32, 64 * 2 + 16, 'laddertop');
-        //this.instancePortalTile = this.portalTiles.create(10 * 64 -32, 10 * 64 - 32, 'portalTile');
-        this.snakEye1 = this.snakeEyes.create(64 * 1 + 32, 64 * 2 + 48, 'snakeEye');
+      
+
         this.snakeEye2 = this.snakeEyes.create(8 * 64 + 32, 4 * 64 + 32, 'snakeEye').setData({tailTileNumber: 5});
         this.snake2 = this.snakes.create(this.snakeEye2.x,this.snakeEye2.y,'snakeY') ;
-        this.snakePlace(this.snake2,this.snakeEye2,5);
+        this.snakePlace(this.snake2,this.snakeEye2);
         
         this.snakeEye3 = this.snakeEyes.create(5 * 64 + 32, 4 * 64 + 32, 'snakeEye').setData({tailTileNumber: 12});
         this.snake3 = this.snakes.create(this.snakeEye3.x,this.snakeEye3.y,'snakeY').setTint(0xDEDE11);
@@ -124,7 +124,10 @@ var Snakes = new Phaser.Class({
         this.snake4 = this.snakes.create(this.snakeEye4.x,this.snakeEye4.y,'snakeY').setTint(0x175903);
         this.snakePlace(this.snake4,this.snakeEye4);
         //////////////////////////////////////////
-        this.ladderFoot1 = this.ladderFeet.create(2 * 64 + 6, 8 * 64 + 60, 'ladderFoot');
+        // this.ladderFoot1 = this.ladderFeet.create(2 * 64 + 6, 8 * 64 + 60, 'ladderFoot');
+        // this.ladder1 = this.ladders.create(this.ladderFoot1.x,this.ladderFoot1.y,'ladder').setTint(0xD09155).setData({topTileNumber: 75});
+        // this.ladderPlace(this.ladder1,this.ladderFoot1);
+        
         this.ladderFoot2 = this.ladderFeet.create(64 * 6 + 32, 64* 10 - 32,'ladderFoot').setData({topTileNumber: 57});
         this.ladder2 = this.ladders.create(this.ladderFoot2.x,this.ladderFoot2.y,'ladder');
         this.ladderPlace(this.ladder2,this.ladderFoot2);
@@ -133,9 +136,8 @@ var Snakes = new Phaser.Class({
         this.ladder3 = this.ladders.create(this.ladderFoot3.x,this.ladderFoot3.y,'ladder').setTint(0xFFDED0);
         this.ladderPlace(this.ladder3,this.ladderFoot3);
 
-        this.ladderFoot4 = this.ladderFeet.create(64 * 4 + 32, 64 * 8 - 32,'ladderFoot').setData({topTileNumber: 78});
-        this.ladder4 = this.ladders.create(this.ladderFoot4.x,this.ladderFoot4.y,'ladder').setTint(0x222222);
-        
+        this.ladderFoot4 = this.ladderFeet.create(64 * 1 + 32, 64 * 8 - 32,'ladderFoot').setData({topTileNumber: 41}); // this one buggy
+        this.ladder4 = this.ladders.create(this.ladderFoot4.x,this.ladderFoot4.y,'ladder').setTint(0xAAAAAB);
         this.ladderPlace(this.ladder4,this.ladderFoot4);
 
 
@@ -194,6 +196,7 @@ var Snakes = new Phaser.Class({
    
     snakePlace: function (snake, headObject) {
         snake.setOrigin(0, 0.5)
+        
         let tailTileNumber = headObject.getData('tailTileNumber');
         snake.x = this.tileCentreXFromNumber(tailTileNumber);
         snake.y = this.tileCentreYFromNumber(tailTileNumber);
@@ -201,7 +204,9 @@ var Snakes = new Phaser.Class({
         let rotation =Math.atan2(-snake.y + headObject.y, -snake.x + headObject.x);
         snake.rotation = rotation;
         let squareSum = (snake.x - headObject.x)*(snake.x - headObject.x) + (snake.y- headObject.y) * (snake.y- headObject.y) ;
+        
         snake.scaleX = Math.sqrt(squareSum) / 256; // n.b. scaled to tiles
+        
 
     },
     ladderPlace: function (ladder, footObject) {
@@ -222,11 +227,10 @@ var Snakes = new Phaser.Class({
     {
         ppUp.disableBody(true, true);
         console.log('in collectPortal');
-        //setTimeout
-        //setTimeout(function(){
+    
             this.instancePortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'tile4').setAlpha(0.8,0.6,0.7, 0.5);
             this.instancePortalZone = this.portalCentres.create(64 * 10 - 32, 64 * 10 - 15,'portalCentre');
-            //; }, 400);
+  
     },
     // reference:
     walkUp: function (marine, ladderFoot)
@@ -333,12 +337,7 @@ var Snakes = new Phaser.Class({
             if(this.portalPowerUp) {
                 this.portalPowerUp.angle++;
             }
-            // hackey ladder send
-            //this.physics.overlap(this.loneMarine, this.instanceLadderBottom, this.walkUp, null, this);
-            // if (this.loneMarine.x <= 64*2 + 32 && this.loneMarine.y == 64 * 8 + 48)  
-            //     //console.log('100 x crossed');
-            //     this.physics.moveToObject(this.loneMarine,this.instanceLadderTop);
-            //     //this.physics.moveTo(this.loneMarine,  64 * 7 + 32, 64 * 2 + 48, 100 );
+            
             if(this.goingUp && this.loneMarine.y < this.catchLine) {
                 this.walkRight();
                 this.goingUp = false;
