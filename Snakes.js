@@ -92,40 +92,39 @@ var Snakes = new Phaser.Class({
         this.marines = this.physics.add.group();
         this.snakes = this.add.group();
         this.ladders = this.add.group();
-        this.snakeheads = this.physics.add.group();
-        this.snaketails = this.physics.add.group();
-        this.laddertops = this.physics.add.group();
-        this.ladderbottoms = this.physics.add.group();
+        // this.snakeheads = this.physics.add.group();
+        // this.snaketails = this.physics.add.group();
+        // this.laddertops = this.physics.add.group();
+        // this.ladderbottoms = this.physics.add.group();
         this.ppUps = this.physics.add.group();
         this.snakeEyes = this.physics.add.group();
         this.ladderFeet = this.physics.add.group();
-        this.sTHelpers = this.physics.add.group();
+        // this.sTHelpers = this.physics.add.group();
         this.portalTiles = this.physics.add.group();
         this.portalCentres = this.physics.add.group();
         ///////////
         this.loneMarine = this.marines.create(32 ,64 * 9 + 48, 'marine');
         
-        this.instanceSnakeHead = this.snakeheads.create(64 * 1 + 32, 64 * 2 + 48, 'snakehead');
-        this.instanceSnakeEye = this.snakeEyes.create(64 * 1 + 32, 64 * 2 + 48, 'snakeEye');
-        this.instanceSnakeTail = this.snaketails.create(64 * 1 + 32, 64 * 6 + 32, 'snaketail');
+        // this.instanceSnakeHead = this.snakeheads.create(64 * 1 + 32, 64 * 2 + 48, 'snakehead');
+        // this.instanceSnakeTail = this.snaketails.create(64 * 1 + 32, 64 * 6 + 32, 'snaketail');
         //this.instanceSTHelper = this.snaketails.create(64 * 1 + 32, 64 * 6 + 32, 'snaketail');
-        this.instanceLadderBottom = this.ladderbottoms.create(64 * 2 + 16, 64 * 8 + 48, 'ladderbottom');
-        this.instanceLadderTop = this.laddertops.create(64 * 7 + 32, 64 * 2 + 16, 'laddertop');
-        this.instanceLadderFoot = this.ladderFeet.create(2 * 64 + 6, 8 * 64 + 60, 'ladderFoot');
-        this.instanceLadderFoot = this.ladderFeet.create(2 * 64 + 6, 8 * 64 + 60, 'ladderFoot');
+        // this.instanceLadderBottom = this.ladderbottoms.create(64 * 2 + 16, 64 * 8 + 48, 'ladderbottom');
+        // this.instanceLadderTop = this.laddertops.create(64 * 7 + 32, 64 * 2 + 16, 'laddertop');
         //this.instancePortalTile = this.portalTiles.create(10 * 64 -32, 10 * 64 - 32, 'portalTile');
+        this.snakEye1 = this.snakeEyes.create(64 * 1 + 32, 64 * 2 + 48, 'snakeEye');
         this.snakeEye2 = this.snakeEyes.create(8 * 64 + 32, 4 * 64 + 32, 'snakeEye').setData({tailTileNumber: 5});
         this.snake2 = this.snakes.create(this.snakeEye2.x,this.snakeEye2.y,'snakeY') ;
         this.snakePlace(this.snake2,this.snakeEye2,5);
-
+        
         this.snakeEye3 = this.snakeEyes.create(5 * 64 + 32, 4 * 64 + 32, 'snakeEye').setData({tailTileNumber: 12});
         this.snake3 = this.snakes.create(this.snakeEye3.x,this.snakeEye3.y,'snakeY').setTint(0xDEDE11);
         this.snakePlace(this.snake3,this.snakeEye3);
-
+        
         this.snakeEye4 = this.snakeEyes.create(3 * 64 + 32, 1 * 64 + 32, 'snakeEye').setData({tailTileNumber: 33});
         this.snake4 = this.snakes.create(this.snakeEye4.x,this.snakeEye4.y,'snakeY').setTint(0x175903);
         this.snakePlace(this.snake4,this.snakeEye4);
         //////////////////////////////////////////
+        this.ladderFoot1 = this.ladderFeet.create(2 * 64 + 6, 8 * 64 + 60, 'ladderFoot');
         this.ladderFoot2 = this.ladderFeet.create(64 * 6 + 32, 64* 10 - 32,'ladderFoot').setData({topTileNumber: 57});
         this.ladder2 = this.ladders.create(this.ladderFoot2.x,this.ladderFoot2.y,'ladder');
         this.ladderPlace(this.ladder2,this.ladderFoot2);
@@ -138,9 +137,6 @@ var Snakes = new Phaser.Class({
         this.ladder4 = this.ladders.create(this.ladderFoot4.x,this.ladderFoot4.y,'ladder').setTint(0x222222);
         
         this.ladderPlace(this.ladder4,this.ladderFoot4);
-
-
-
 
 
         // release manually for now with 'R'
@@ -261,6 +257,15 @@ var Snakes = new Phaser.Class({
         this.walking = true;
         this.spinning = false;
         this.loneMarine.angle = 0;
+        this.loneMarine.setAngularAcceleration(0);
+        this.loneMarine.setAngularVelocity(0);
+        //orig.
+        // this.loneMarine.setVelocityX(100);
+        // this.loneMarine.setVelocityY(0);
+        // this.walking = true;
+        // this.spinning = false;
+        // this.loneMarine.angle = 0;
+        // this.loneMarine.setAngularDrag(0);
         
     },
 
@@ -278,6 +283,7 @@ var Snakes = new Phaser.Class({
       marine.y = 640 - 16;
       marine.setVelocityX(100);
       marine.setVelocityY(0);  
+      marine.setAngularAcceleration(-250);
     },
 
     //place portal tile  
