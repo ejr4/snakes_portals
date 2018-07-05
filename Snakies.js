@@ -35,6 +35,10 @@ var Snakies = new Phaser.Class({
         this.load.image('snakeY', 'assets/snakeY.png');
         this.load.image('glassTile', 'assets/glassTile.png');
         this.load.image('soldier', 'assets/soldier.png');
+        this.load.image('laddertop', 'assets/laddertop.png');
+        this.load.image('ladderbottom', 'assets/ladderbottom.png');
+        this.load.image('snakehead', 'assets/snakehead.png');
+        this.load.image('snaketail', 'assets/snaketail.png');
     },
 
     mapMake: function() {
@@ -58,23 +62,35 @@ var Snakies = new Phaser.Class({
         this.mapMake();
         this.timer = 0;
 
-        this.marines = this.physics.add.group({    
-            // maxSize: 5,
-            key: 'soldier'// ??
-        });
+        this.marines = this.physics.add.group();
+        this.snakeheads = this.physics.add.group();
+        this.snaketails = this.physics.add.group();
+        this.laddertops = this.physics.add.group();
+        this.ladderbottoms = this.add.group();
         ///////////
-        this.loneMarine = this.marines.create(64 * 9 + 48 ,64 * 8 + 48,'soldier');
-        this.loneMarine.setVelocityX(-60);
+        this.loneMarine = this.marines.create(64 * 9 + 48 ,64 * 8 + 48, 'soldier');
+        
+        this.firstSnakeHead = this.snakeheads.create(64 * 3 + 32, 64 * 1 + 32, 'snakehead');
+        this.firstSnakeTail = this.snaketails.create(64 * 3 + 32, 64 * 7 + 32, 'snaketail');
+        this.firstLadderBottom = this.ladderbottoms.create(64 * 2 + 32, 64 * 8 + 48, 'ladderbottom');
+        this.firstLadderTop = this.laddertops.create(64 * 7 + 32, 64 * 2 + 48, 'laddertop');
 
         // release manually for now with 'R'
         this.input.keyboard.on('keydown_R', function (event) { 
             //this.loneMarine.setVelocityX(-60);
-            console.log(this);
+            this.loneMarine.setVelocityX(-99);
         }, this);
         ///////////////////////////
+        // colliders 
+        this.physics.add.collider(this.loneMarine, this.firstLadderBottom, this.walkAlong, null, this);
 
     },
-   
+    // reference:
+    walkAlong: function (marine, ladderBottom)
+    {
+        moveTo(marine,this.firstLadderTop);
+        console.log('done collided');
+    },
 
     releaseMarine: function (tX,tY) 
     {
@@ -101,12 +117,32 @@ var Snakies = new Phaser.Class({
     
     update: function ()
     {
+        //console.log(this.loneMarine.y);
         // is buggy:
         // if (this.time.now > this.timer) {
         //     //console.log('updating');
         //     this.releaseMarine(9,8);
         // } 
             this.mapWrap(this.loneMarine);
+            // hackey ladder send
+            // if (this.loneMarine.position = this.firstLadderBottom.position) {
+            //     console.log('hackladder hit');
+            //     moveTo(loneMarine,this.firstLadderBottom.position);
+            // }   /// nope!  
+            //even hackier:
+            if (this.loneMarine.x <= 64*2 + 32 && this.loneMarine.y == 64 * 8 + 48)  {
+                //console.log('100 x crossed');
+                this.physics.moveTo(this.loneMarine,  64 * 7 + 32, 64 * 2 + 48, 100 );
+               // console.log(this.loneMarine.x);
+            }
+            if (this.loneMarine.x > 64*2 + 32 && this.loneMarine.y < 64 * 2 + 48)  {
+                //console.log('100 x crossed');
+                this.loneMarine.setVelocityX(-100);
+                this.loneMarine.setVelocityY(0);
+
+               // console.log(this.loneMarine.x);
+            }
+            
         //console.log('updating');
     }
 
