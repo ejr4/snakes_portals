@@ -49,7 +49,8 @@ var Snakes = new Phaser.Class({
     {
        
         //this.load.image('tiles', 'assets/drawtiles-longer64.png');
-        this.load.image('tiles', 'assets/drawtiles-numbered64.png');
+        this.load.image('tiles', 'assets/drawtiles-good64.png');
+        // this.load.image('tiles', 'assets/drawtiles-numbered2.png');
         
         this.load.image('ladder', 'assets/ladder.png');
         this.load.image('snake', 'assets/snake.png');
@@ -73,13 +74,23 @@ var Snakes = new Phaser.Class({
 
     mapMake: function() {
         this.tiles = [];
-        for(let i = 0; i < 10; i++){
+        for(let i = 9; i >= 0 ; i -- ){
             let row = [];
             for(let j = 0; j<10; j++){
                 row.push(10*i + j + 1);
             }
             this.tiles.push(row);
-        }
+         }
+         /// original:
+    // mapMake: function() {
+    //     this.tiles = [];
+    //     for(let i = 0; i < 10; i++){
+    //         let row = [];
+    //         for(let j = 0; j<10; j++){
+    //             row.push(10*i + j + 1);
+    //         }
+    //         this.tiles.push(row);
+    //     }
         
         this.map = this.make.tilemap({ data: this.tiles, tileWidth: 64, tileHeight: 64 });// was 32
         this.tileset = this.map.addTilesetImage('tiles',null,64,64,2,4);//was 32,32,1,2
