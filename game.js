@@ -8,7 +8,7 @@ var config = {
     //     //     gravity: {y : 500}
     //     // }
  },
-    scene: [Splash, Snakies ] // order of appearance 
+    scene: [Snakes, Splash  ] // order of appearance 
 };
 
 var game = new Phaser.Game(config);
