@@ -56,6 +56,7 @@ var Snakies = new Phaser.Class({
         this.load.image('ladderFoot', 'assets/ladderFoot.png');
         this.load.image('portalTile', 'assets/portalTile.png');
         this.load.image('portalCentre', 'assets/portalCentre.png');
+        this.load.image('tile4', 'assets/tile4.png');
     },
 
     mapMake: function() {
@@ -82,7 +83,8 @@ var Snakies = new Phaser.Class({
         this.isWalking = true;
         this.goingDown = false;
         this.goingUp = false;
-
+        this.spinning = false;
+        //// groups
         this.marines = this.physics.add.group();
         this.snakeheads = this.physics.add.group();
         this.snaketails = this.physics.add.group();
@@ -169,7 +171,7 @@ var Snakies = new Phaser.Class({
         console.log('in collectPortal');
         //setTimeout
         //setTimeout(function(){
-            this.instancePortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'portalTile').setAlpha(0.4,0.4,0.4, 0.4);
+            this.instancePortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'tile4').setAlpha(0.8,0.6,0.7, 0.5);
             this.instancePortalZone = this.portalCentres.create(64 * 10 - 32, 64 * 10 - 15,'portalCentre');
             //; }, 400);
     },
@@ -195,6 +197,8 @@ var Snakies = new Phaser.Class({
         this.loneMarine.setVelocityX(-100);
         this.loneMarine.setVelocityY(0);
         this.isWalking = true;
+        this.spinning = false;
+        this.loneMarine.angle = 0;
         
     },
 
@@ -211,20 +215,41 @@ var Snakies = new Phaser.Class({
 
     //place portal tile  
     placePortal: function(tX,tY) {
-        this.portalPowerUp = this.ppUps.create(64 * tX + 32, 64 * tY + 32, 'glassTile').setTint(0x448FF1).setAlpha(1,.6,.6, 0.2);
+        this.portalPowerUp = this.ppUps.create(64 * tX + 32, 64 * tY + 32, 'glassTile').setTint(0x448FF1).setAlpha(1,.5,.5, 0.3);
     },
     portalSend: function(marine, portal) {
-        console.log("in portalSend");
         this.goingUp = true;
-        
-        let targetX = 
+        let targetNumber = this.tileNumberFromXY(marine.x,marine.y)*4;
+        console.log("in portalSend",targetNumber);
+        let targetX = this.tileCentreXFromNumber(targetNumber);
+        let targetY = this.tileCentreYFromNumber(targetNumber);
+        this.catchLine = targetY + 16;
         this.physics.moveTo(marine,targetX,targetY);
+        this.physics.moveTo(marine,100,100);
     },
     mapWrap: function(marine) {
         if(marine && marine.x < 0){
             marine.y -= 64;
              marine.x = 64*10 - 16;
          }
+    },
+    //auxiliary
+    tileCentreYFromNumber: function (number) {
+        let rowFromOne = Math.floor((number - 1)/10);
+        return (
+            640 - (64 * rowFromOne + 32)
+        );
+    },
+    tileCentreXFromNumber: function (number) {
+        let columnFromZero = (number - 1) % 10;
+        return (
+            64 * columnFromZero + 32
+        );
+    },
+    tileNumberFromXY: function (x,y) {
+        return (
+            Math.floor(x / 64) + 1 + (10 * (10 - Math.ceil(y / 64)))
+        );
     },
     
     
@@ -247,6 +272,9 @@ var Snakies = new Phaser.Class({
             if(this.goingDown && this.loneMarine.y > this.catchLine) {
                 this.walkLeft();
                 this.goingDown = false;
+            }
+            if(this.spinning) {
+                this.loneMarine.angle += 29;
             }
         }
 
