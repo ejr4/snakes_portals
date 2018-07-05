@@ -103,7 +103,7 @@ var Snakes = new Phaser.Class({
         this.portalTiles = this.physics.add.group();
         this.portalCentres = this.physics.add.group();
         ///////////
-        this.loneMarine = this.marines.create(32 ,64 * 4 + 48, 'marine');
+        this.loneMarine = this.marines.create(32 ,64 * 9 + 48, 'marine');
         
         this.instanceSnakeHead = this.snakeheads.create(64 * 1 + 32, 64 * 2 + 48, 'snakehead');
         this.instanceSnakeEye = this.snakeEyes.create(64 * 1 + 32, 64 * 2 + 48, 'snakeEye');
@@ -121,11 +121,23 @@ var Snakes = new Phaser.Class({
         this.snakeEye3 = this.snakeEyes.create(5 * 64 + 32, 4 * 64 + 32, 'snakeEye').setData({tailTileNumber: 12});
         this.snake3 = this.snakes.create(this.snakeEye3.x,this.snakeEye3.y,'snakeY').setTint(0xDEDE11);
         this.snakePlace(this.snake3,this.snakeEye3);
+
+        this.snakeEye4 = this.snakeEyes.create(3 * 64 + 32, 1 * 64 + 32, 'snakeEye').setData({tailTileNumber: 33});
+        this.snake4 = this.snakes.create(this.snakeEye4.x,this.snakeEye4.y,'snakeY').setTint(0x175903);
+        this.snakePlace(this.snake4,this.snakeEye4);
         //////////////////////////////////////////
         this.ladderFoot2 = this.ladderFeet.create(64 * 6 + 32, 64* 10 - 32,'ladderFoot').setData({topTileNumber: 57});
         this.ladder2 = this.ladders.create(this.ladderFoot2.x,this.ladderFoot2.y,'ladder');
-
         this.ladderPlace(this.ladder2,this.ladderFoot2);
+
+        this.ladderFoot3 = this.ladderFeet.create(64 * 7 + 32, 64* 8 - 32,'ladderFoot').setData({topTileNumber: 98});
+        this.ladder3 = this.ladders.create(this.ladderFoot3.x,this.ladderFoot3.y,'ladder').setTint(0xFFDED0);
+        this.ladderPlace(this.ladder3,this.ladderFoot3);
+
+        this.ladderFoot4 = this.ladderFeet.create(64 * 4 + 32, 64 * 8 - 32,'ladderFoot').setData({topTileNumber: 78});
+        this.ladder4 = this.ladders.create(this.ladderFoot4.x,this.ladderFoot4.y,'ladder').setTint(0x222222);
+        
+        this.ladderPlace(this.ladder4,this.ladderFoot4);
 
 
 
@@ -138,7 +150,7 @@ var Snakes = new Phaser.Class({
         }, this);
         /// tile placer
         this.input.keyboard.on('keydown_U', function (event) { 
-            this.placePortal(3,5);
+            this.placePortal(7,4);
         }, this);
         this.input.keyboard.on('keydown_A', function (event) {
             if(this.instancePortalTile) {
@@ -183,9 +195,7 @@ var Snakes = new Phaser.Class({
         
 
     },
-    exclaimInDespair: function(what,what) {
-        console.log(what,what);
-    },
+   
     snakePlace: function (snake, headObject) {
         snake.setOrigin(0, 0.5)
         let tailTileNumber = headObject.getData('tailTileNumber');
@@ -223,13 +233,15 @@ var Snakes = new Phaser.Class({
             //; }, 400);
     },
     // reference:
-    walkUp: function (marine, ladderBottom)
+    walkUp: function (marine, ladderFoot)
     {
         //console.log('walkUp');
         this.goingUp = true;
-        this.physics.moveToObject(marine,this.instanceLadderTop,160);
-        this.catchLine = this.instanceLadderTop.y + 32;
-        
+        let topTileNumber = ladderFoot.getData('topTileNumber');
+        let targetX = this.tileCentreXFromNumber(topTileNumber);
+        let targetY = this.tileCentreYFromNumber(topTileNumber);
+        this.physics.moveTo(marine,targetX,targetY,160);
+        this.catchLine = targetY + 16;
     },
     slideDown: function (marine, snakeEye)
     {
@@ -261,7 +273,12 @@ var Snakes = new Phaser.Class({
         newMarine.setVelocityX(100);
         //console.log(newMarine.typeof());
     },
-
+    resetMarine: function (marine) {
+      marine.x = 16;
+      marine.y = 640 - 16;
+      marine.setVelocityX(100);
+      marine.setVelocityY(0);  
+    },
 
     //place portal tile  
     placePortal: function(tX,tY) {
@@ -329,6 +346,9 @@ var Snakes = new Phaser.Class({
             }
             if(this.instancePortalCentre) {
                 this.instancePortalCentre.angle += 90;
+            }
+            if(this.loneMarine.y < - 200) {
+                this.resetMarine(this.loneMarine);
             }
         }
 

@@ -30,3 +30,7 @@ console.log(tileCentreXFromNumber(91));
 console.log(tileCentreYFromNumber(91));
 console.log(tileCentreXFromNumber(100));
 console.log(tileCentreYFromNumber(100));
+console.log(tileCentreXFromNumber(100));
+console.log(tileCentreYFromNumber(100));
+console.log(tileCentreXFromNumber(78));
+console.log(tileCentreYFromNumber(78));
