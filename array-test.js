@@ -17,15 +17,14 @@ function runboard(board, players) {
     var record = [];
     let steps = 0;
     
-    record.push(players);
+    record.push(players); // could deep copy.  could keeep just some records. etc.  for now keep all steps.  not much data
     log(record);
     while(++steps < 10) {
-        let newstate = players.map((player) => { 
-            // (board[player] || player + 1)
-            player + 1
-        });
-        record.push(newstate);
-        console.log(newstate);
+        players = players.map( (player) => 
+            (board[player] || player + 1)
+            );
+        record.push(players);
+        console.log(players);
     }
     return record;
 }
@@ -33,7 +32,29 @@ function runboard(board, players) {
 // runboard(board1,player1tile);
 // log("snake board:" );
 // runboard(board2,player2tile);
-log("inwhowhat:" );
+log("board3:" );
 runboard(board3, players);
+log("board1:" );
+players = [0, 2, 7];
+runboard(board1, players);
+log("board2:" );
+players = [0, 2, 7];
+runboard(board2, players);
+
+/*  snakes from array pseudocode
+    init snakes
+    init ladders
+        for tiles in board 
+            if tile 
+                if tile > index // snakehead case
+                    next snake is from tile to index
+                else if tile < index 
+                    next ladder is index to tile
+                else if tile == index
+                    winning square or glue trap
+                else error  // ok maybe overkill
+            fi
+        
 
 
+*/ 
