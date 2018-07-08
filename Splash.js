@@ -15,7 +15,7 @@ class Splash extends Phaser.Scene {
         
 
         this.input.keyboard.on('keyup_T', (event) => {
-                      this.scene.switch("Snakies");
+                      this.scene.switch("Snakes");
 
         });
     
