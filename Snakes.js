@@ -111,7 +111,12 @@ var Snakes = new Phaser.Class({
         this.goingUp = false;
         this.spinning = false;
         //// groups
-        this.marines = this.physics.add.group();
+        this.marines = this.physics.add.group({
+            maxSize: 5,
+            runChildUpdate: true,
+            defaultKey: 'marine'
+        });
+        /// trying runChildUpdate.  
         this.snakes = this.add.group();
         this.ladders = this.add.group();
         this.snakeHeads = this.add.group();
@@ -191,7 +196,7 @@ var Snakes = new Phaser.Class({
             }
         }, this);
         /////////////////////////// test  !!!  
-       this.testheads = this.add.group({
+       this.testheads = this.physics.add.group({
             defaultKey: 'snakehead',
             maxSize: 10
         });
@@ -222,7 +227,9 @@ var Snakes = new Phaser.Class({
         this.physics.add.overlap(this.loneMarine, this.portalPowerUp, this.walkRight, null, this);
         this.physics.add.overlap(this.loneMarine, this.snakeEyes, this.slideDown, null, this); // this could be SnakeEyes
         this.physics.add.overlap(this.loneMarine, this.ladderFeet, this.walkUp, null, this);
-         this.physics.add.overlap(this.loneMarine, this.testheads, this.testUp, null, this);
+        this.physics.add.overlap(this.marines, this.ladderFeet, this.walkUp, null, this);
+        //  this.physics.add.overlap(this.loneMarine, this.testheads, this.testUp, null, this); // loneMarine
+         this.physics.add.overlap(this.marines, this.testheads, this.testUp, null, this);
         // this.physics.add.overlap(this.loneMarine, this.instanceSnakeTail, this.walkRight, null, this);
         this.physics.add.overlap(this.loneMarine, this.ppUps, this.collectPortal, null, this);
         this.physics.add.overlap(this.loneMarine, this.portalCentres, this.portalSend, null, this);
@@ -232,7 +239,9 @@ var Snakes = new Phaser.Class({
     },
    testUp: function(marine, other) {
     console.log('in testUp for testHead overlap');
-    this.testheads.forEach((testhead)=>console.log('tsetse fly'));
+    //this.testheads.children.forEach((snakehead)=>console.log('tsetse fly'));
+    // the above throws error with or without 'children'
+    this.portalSend(marine,other);
    },
 
 
@@ -338,6 +347,18 @@ var Snakes = new Phaser.Class({
         newMarine.setVelocityX(100);
         //console.log(newMarine.typeof());
     },
+    releaseMarine2: function (tX,tY) 
+    {
+        this.timer = this.time.now + 1618;
+        var marine = this.marines.get();
+        if(marine){ 
+            //let newMarine = this.marines.get(64*tX + 48,64*tY +  48);
+            marine.setPosition(64 * tX + 48 ,64 * tY + 48);
+            //this.marines.push(newMarine); // nope.
+            marine.setVelocityX(100);
+            //console.log(newMarine.typeof());
+        }
+    },
     resetMarine: function (marine) {
       marine.x = 16;
       marine.y = 640 - 16;
@@ -411,7 +432,11 @@ var Snakes = new Phaser.Class({
             if(this.loneMarine.y < - 200) {
                 this.resetMarine(this.loneMarine);
             }
-        }
+            if(this.time.now > this.timer  ) {
+                this.releaseMarine2(0,9);
+                console.log(this.marines.length);
+            }
+    }
 
 });
 
