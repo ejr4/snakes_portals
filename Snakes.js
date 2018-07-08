@@ -313,8 +313,8 @@ var Snakes = new Phaser.Class({
         let targetX = this.tileCentreXFromNumber(targetNumber);
         let targetY = this.tileCentreYFromNumber(targetNumber);
         this.catchLine = targetY + 16;
-        this.physics.moveTo(marine,targetX,targetY);
-        this.physics.moveTo(marine,100,100,170);
+        this.physics.moveTo(marine,targetX,targetY,170);
+        //this.physics.moveTo(marine,100,100,170); what
     },
     mapWrap: function(marine) {
         if(marine && marine.x > 640){
