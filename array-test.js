@@ -56,5 +56,6 @@ runboard(board2, players);
             fi
         
 
+with warp tiles: on hit detect (make it small, let the tile have no in-between), if tile valid, flag warping, (use marines.forEach, if not warping then update, e.g.).  
 
 */ 
