@@ -29,6 +29,7 @@ var Snake2 = new Phaser.Class({
         this.ladderFeet;
         this.T;
         this.catchLine;
+        this.nodeArray;
     },
 
     preload: function ()
@@ -72,6 +73,7 @@ var Snake2 = new Phaser.Class({
                 nText.setText(10*i + j) ; // hackey?
             }
         }
+        return nodeArray;
     },
     getSnakes: function(levelData) {
         for (let i = 0; i < levelData.length; i++) {
@@ -83,6 +85,13 @@ var Snake2 = new Phaser.Class({
                     // let ladder = this.ladders.get();
                     // let snake = this.snakes.get();
                     this.snakeFromTiles(i,datum);
+                }
+                else if (datum < i) {
+                    this.ladderFromTiles(datum,i);
+                }
+                else if (datum == i) {
+                    // should be fall through anyway
+                    //this.winTilePlace(i);
                 }
             }
         }   
@@ -130,8 +139,7 @@ var Snake2 = new Phaser.Class({
              100
         ];
         this.mapMake();
-        this.makeNodeArray();
-        // this.getSnakes(this.levelData);  // not workign
+        this.nodeArray = this.makeNodeArray();
         this.timer = 0;
         this.walking = true;
         this.goingDown = false;
@@ -155,17 +163,18 @@ var Snake2 = new Phaser.Class({
             defaultKey: 'ladder'
         });
         
-        this.thisFunction(4,4); /// after defining sneks
-      
+        //this.thisFunction(4,4); /// after defining sneks
+         this.getSnakes(this.levelData);  // not workign
+        
         this.ppUps = this.physics.add.group();
-      
+        
         this.portalTiles = this.physics.add.group();
         this.portalCentres = this.physics.add.group();
         ///////////
         this.loneMarine = this.marines.create(32 ,64 * 9 + 48, 'marine');
-
         
-       
+        
+        
         this.input.keyboard.on('keydown_R', function (event) { 
             
             this.loneMarine.setVelocityX(100);
@@ -246,20 +255,7 @@ var Snake2 = new Phaser.Class({
         ladder.scaleX = Math.sqrt(squareSum) / 160; // n.b. scaled to tiles
 
     },
-    ladderPlaceFromArray: function (ladder, footObject) {
-        ladder.setOrigin(0, 0.5)
-        let topTileNumber = footObject.getData('topTileNumber');
-        let topTileX = this.tileCentreXFromNumber(topTileNumber);
-        let topTileY = this.tileCentreYFromNumber(topTileNumber);
     
-        // console.log('ttx,y,ttN:',topTileX,topTileY,topTileNumber);
-        
-        let rotation =-Math.atan2(ladder.y - topTileY, ladder.x - topTileX);
-        ladder.rotation = rotation;
-        let squareSum = (ladder.x - topTileX)*(ladder.x - topTileX) + (ladder.y- topTileY) * (ladder.y- topTileY) ;
-        ladder.scaleX = Math.sqrt(squareSum) / 160; // n.b. scaled to tiles
-
-    },
     collectPortal: function (marine, ppUp) 
     {
         ppUp.disableBody(true, true);
@@ -315,16 +311,13 @@ var Snake2 = new Phaser.Class({
     {
         this.timer = this.time.now + 1618;
         var marine = this.marines.get(); // works!
-        console.log(this.marines);
-        console.log(this.snakes);
-        console.log(this.ladders);
-        //var snake = this.snakes.get(44,44); /// works... 
+         
         if(marine){ 
-            //let newMarine = this.marines.get(64*tX + 48,64*tY +  48);
+          
             marine.setPosition(64 * tX + 48 ,64 * tY + 48);
-            //this.marines.push(newMarine); // nope.
+   
             marine.setVelocityX(100);
-            //console.log(newMarine.typeof());
+ 
         }
     },
     thisFunction: function(tailTile,headTile) {
@@ -342,15 +335,30 @@ var Snake2 = new Phaser.Class({
         var snake = this.snakes.get();
         snake.setOrigin(0, 0.5);
         /// setPosition, rather? 
-        snake.x = this.nodeArray(tailTile)[0];
-        snake.y = this.nodeArray(tailTile)[1];
-        let headX = this.nodeArray(headTile)[0];
-        let headY = this.nodeArray(headTile)[1];
+        snake.x = this.nodeArray[tailTile][0];
+        snake.y = this.nodeArray[tailTile][1];
+        let headX = this.nodeArray[headTile][0];
+        let headY = this.nodeArray[headTile][1];
         let rotation = Math.atan2(-snake.y + headY, -snake.x + headX);
         snake.rotation = rotation;
         let squareSum = (snake.x - headX)*(snake.x - headX) + (snake.y- headY) * (snake.y- headY) ;
         
         snake.scaleX = Math.sqrt(squareSum) / 256; // n.b. scaled
+    },
+    ladderFromTiles: function (tailTile, headTile) {
+        var ladder = this.ladders.get();
+        ladder.setOrigin(0, 0.5);
+        /// setPosition, rather? 
+        ladder.x = this.nodeArray[tailTile][0];
+        ladder.y = this.nodeArray[tailTile][1];
+        let headX = this.nodeArray[headTile][0];
+        let headY = this.nodeArray[headTile][1];
+        let rotation = Math.atan2(-ladder.y + headY, -ladder.x + headX);
+        ladder.rotation = rotation;
+        let squareSum = (ladder.x - headX)*(ladder.x - headX) + (ladder.y- headY) * (ladder.y- headY) ;
+        
+        ladder.scaleX = Math.sqrt(squareSum) / 160; // n.b. sc
+
     },
 
     //place portal tile  
