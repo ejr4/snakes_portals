@@ -41,6 +41,9 @@ var Snakes = new Phaser.Class({
         this.ladderFoot2;
         this.ladderFoot3;
         this.ladderFoot4;
+
+        this.snakeHeads;
+        this.testheads;
         
 
     },
@@ -111,6 +114,7 @@ var Snakes = new Phaser.Class({
         this.marines = this.physics.add.group();
         this.snakes = this.add.group();
         this.ladders = this.add.group();
+        this.snakeHeads = this.add.group();
       
         this.ppUps = this.physics.add.group();
         this.snakeEyes = this.physics.add.group();
@@ -186,7 +190,29 @@ var Snakes = new Phaser.Class({
             this.instancePortalZone.y += 64;
             }
         }, this);
-        ///////////////////////////
+        /////////////////////////// test  !!!  
+       this.testheads = this.add.group({
+            defaultKey: 'snakehead',
+            maxSize: 10
+        });
+    
+        var x = 60;
+    
+        this.input.on('pointerdown', function () {
+    
+            //  Pluck an entry from the pool. If it doesn't already exist, create it.
+            this.testheads.get(x, 500);
+    
+            x += 74;
+            console.log(this.testheads[0]);
+            // info.setText([
+            //     'Used: ' + testheads.getTotalUsed(),
+            //     'Free: ' + testheads.getTotalFree()
+            // ]);
+    
+        },this);
+
+        ////////////////////////////
         // overlaps are great ... if they work
         //this.physics.add.collider(this.loneMarine, this.instanceLadderBottom);
         //this.physics.add.collider(this.marines, this.instanceLadderBottom);
@@ -196,7 +222,7 @@ var Snakes = new Phaser.Class({
         this.physics.add.overlap(this.loneMarine, this.portalPowerUp, this.walkRight, null, this);
         this.physics.add.overlap(this.loneMarine, this.snakeEyes, this.slideDown, null, this); // this could be SnakeEyes
         this.physics.add.overlap(this.loneMarine, this.ladderFeet, this.walkUp, null, this);
-        // this.physics.add.overlap(this.loneMarine, this.instanceSnakeHead, this.walkUp, null, this);
+         this.physics.add.overlap(this.loneMarine, this.testheads, this.testUp, null, this);
         // this.physics.add.overlap(this.loneMarine, this.instanceSnakeTail, this.walkRight, null, this);
         this.physics.add.overlap(this.loneMarine, this.ppUps, this.collectPortal, null, this);
         this.physics.add.overlap(this.loneMarine, this.portalCentres, this.portalSend, null, this);
@@ -204,7 +230,12 @@ var Snakes = new Phaser.Class({
         
 
     },
-   
+   testUp: function(marine, other) {
+    console.log('in testUp for testHead overlap');
+    this.testheads.forEach((testhead)=>console.log('tsetse fly'));
+   },
+
+
     snakePlace: function (snake, headObject) {
         snake.setOrigin(0, 0.5)
         
@@ -221,6 +252,20 @@ var Snakes = new Phaser.Class({
 
     },
     ladderPlace: function (ladder, footObject) {
+        ladder.setOrigin(0, 0.5)
+        let topTileNumber = footObject.getData('topTileNumber');
+        let topTileX = this.tileCentreXFromNumber(topTileNumber);
+        let topTileY = this.tileCentreYFromNumber(topTileNumber);
+    
+        console.log('ttx,y,ttN:',topTileX,topTileY,topTileNumber);
+        
+        let rotation =-Math.atan2(ladder.y - topTileY, ladder.x - topTileX);
+        ladder.rotation = rotation;
+        let squareSum = (ladder.x - topTileX)*(ladder.x - topTileX) + (ladder.y- topTileY) * (ladder.y- topTileY) ;
+        ladder.scaleX = Math.sqrt(squareSum) / 160; // n.b. scaled to tiles
+
+    },
+    ladderPlaceFromArray: function (ladder, footObject) {
         ladder.setOrigin(0, 0.5)
         let topTileNumber = footObject.getData('topTileNumber');
         let topTileX = this.tileCentreXFromNumber(topTileNumber);
