@@ -10,6 +10,7 @@ var Snake2 = new Phaser.Class({
         Phaser.Scene.call(this, { key: 'Snake2' });
         this.beatTimer;
         this.beats;
+        this.beatLength;
         this.snakes;
         this.ladders;
         this.marines;
@@ -143,6 +144,7 @@ var Snake2 = new Phaser.Class({
         this.nodeArray = this.makeNodeArray();
         this.timer = 0;
         this.beatTimer = 0;
+        this.beatLength = 600;
         this.beats = 0;
         this.walking = true;
         this.goingDown = false;
@@ -178,7 +180,15 @@ var Snake2 = new Phaser.Class({
         this.loneMarine.setData({nextTile: 1 })
         
         
-        
+        // speed
+        this.input.keyboard.on('keydown_O', function (event) { 
+              this.beatLength -= 100;
+              console.log(this.beatLength);
+            }, this);
+            this.input.keyboard.on('keydown_P', function (event) { 
+                this.beatLength += 100;
+                console.log(this.beatLength);
+        }, this);
         this.input.keyboard.on('keydown_R', function (event) { 
               this.sendToTile(this.loneMarine,1);
         //    this.loneMarine.setVelocityX(100);
@@ -413,24 +423,33 @@ var Snake2 = new Phaser.Class({
     updateAndSend: function (marine) {
         let curTile = marine.data.values.nextTile;
         let gotTile = this.levelData[curTile];
-        /// checking if need to wrap
-        if( (curTile % 10 == 9) && !gotTile) {
-            let targetX = marine.x + 64;
-            let targetY = marine.y;
-        }
-        else { 
-            let targetX = this.nodeArray[nextTile][0];
-            let targetY = this.nodeArray[nextTile][1];
-        }
+        let nextTile = gotTile || curTile + 1;
+        marine.setData({nextTile: nextTile });
 
-        /////// old
-        let curTile = marine.data.values.nextTile;
-        let nextTile = this.levelData[curTile] || curTile + 1;
-        marine.setData({nextTile: nextTile});
-        let targetX = this.nodeArray[nextTile][0];
-        let targetY = this.nodeArray[nextTile][1];
+        /// checking if need to wrap
+        let willWrap = (curTile % 10 == 9) && !gotTile;
+        ///ternernaries 
+        let targetX = ( willWrap ? marine.x + 64 : this.nodeArray[nextTile][0]);
+        let targetY = ( willWrap ? marine.y  : this.nodeArray[nextTile][1]);
+        /// replaced by ternernes
+        // if( (curTile % 10 == 9) && !gotTile) {
+        //     let targetX = marine.x + 64;
+        //     let targetY = marine.y;
+        // }
+        // else { 
+        //     let targetX = this.nodeArray[nextTile][0];
+        //     let targetY = this.nodeArray[nextTile][1];
+        // }
+
+
+        // /////// old
+        // let curTile = marine.data.values.nextTile;
+        // let nextTile = this.levelData[curTile] || curTile + 1;
+        // marine.setData({nextTile: nextTile});
+        // let targetX = this.nodeArray[nextTile][0];
+        // let targetY = this.nodeArray[nextTile][1];
        // marine.setData({nextTile: this.levelData[nextTile]});
-        this.physics.moveTo(marine,targetX,targetY,null,1000 );
+        this.physics.moveTo(marine,targetX,targetY,null,this.beatLength );
     },
     
     update: function ()
@@ -462,7 +481,7 @@ var Snake2 = new Phaser.Class({
             //     //console.log(this.marines.children.length); // undefined
             // }
             if(this.time.now > this.beatTimer ) {
-                this.beatTimer = this.time.now + 1000;
+                this.beatTimer = this.time.now + this.beatLength;
                 // let nextTile = this.loneMarine.data.values.nextTile;
                 // console.log(nextTile);
                 // this.sendToTile(this.loneMarine,nextTile) ;
