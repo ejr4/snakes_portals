@@ -8,7 +8,8 @@ var Snake2 = new Phaser.Class({
     function Snake2 ()
     {
         Phaser.Scene.call(this, { key: 'Snake2' });
-  
+        this.beatTimer;
+        this.beats;
         this.snakes;
         this.ladders;
         this.marines;
@@ -79,15 +80,15 @@ var Snake2 = new Phaser.Class({
         for (let i = 0; i < levelData.length; i++) {
             datum = levelData[i];
             if (datum) {
-                if (datum > i) {
+                if (datum < i) {
                     //let marine = this.marines.get();
                     // console.log(this); // is 'Snake2'
                     // let ladder = this.ladders.get();
                     // let snake = this.snakes.get();
-                    this.snakeFromTiles(i,datum);
+                    this.snakeFromTiles(datum,i);
                 }
-                else if (datum < i) {
-                    this.ladderFromTiles(datum,i);
+                else if (datum > i) {
+                    this.ladderFromTiles(i,datum);
                 }
                 else if (datum == i) {
                     // should be fall through anyway
@@ -141,6 +142,8 @@ var Snake2 = new Phaser.Class({
         this.mapMake();
         this.nodeArray = this.makeNodeArray();
         this.timer = 0;
+        this.beatTimer = 0;
+        this.beats = 0;
         this.walking = true;
         this.goingDown = false;
         this.goingUp = false;
@@ -172,12 +175,13 @@ var Snake2 = new Phaser.Class({
         this.portalCentres = this.physics.add.group();
         ///////////
         this.loneMarine = this.marines.create(32 ,64 * 9 + 48, 'marine');
+        this.loneMarine.setData({nextTile: 1 })
         
         
         
         this.input.keyboard.on('keydown_R', function (event) { 
-            
-            this.loneMarine.setVelocityX(100);
+              this.sendToTile(this.loneMarine,1);
+        //    this.loneMarine.setVelocityX(100);
         }, this);
         /// tile placer
         this.input.keyboard.on('keydown_U', function (event) { 
@@ -400,7 +404,34 @@ var Snake2 = new Phaser.Class({
             Math.floor(x / 64) + 1 + (10 * (10 - Math.ceil(y / 64)))
         );
     },
-    
+    sendToTile: function (marine, tileNumber) {
+        let targetX = this.nodeArray[tileNumber][0];
+        let targetY = this.nodeArray[tileNumber][1];
+        marine.setData({nextTile: tileNumber});
+        this.physics.moveTo(marine,targetX,targetY,null,1000 );
+    },
+    updateAndSend: function (marine) {
+        let curTile = marine.data.values.nextTile;
+        let gotTile = this.levelData[curTile];
+        /// checking if need to wrap
+        if( (curTile % 10 == 9) && !gotTile) {
+            let targetX = marine.x + 64;
+            let targetY = marine.y;
+        }
+        else { 
+            let targetX = this.nodeArray[nextTile][0];
+            let targetY = this.nodeArray[nextTile][1];
+        }
+
+        /////// old
+        let curTile = marine.data.values.nextTile;
+        let nextTile = this.levelData[curTile] || curTile + 1;
+        marine.setData({nextTile: nextTile});
+        let targetX = this.nodeArray[nextTile][0];
+        let targetY = this.nodeArray[nextTile][1];
+       // marine.setData({nextTile: this.levelData[nextTile]});
+        this.physics.moveTo(marine,targetX,targetY,null,1000 );
+    },
     
     update: function ()
     {
@@ -426,9 +457,17 @@ var Snake2 = new Phaser.Class({
             if(this.loneMarine.y < - 200) {
                 this.resetMarine(this.loneMarine);
             }
-            if(this.time.now > this.timer  ) {
-                this.releaseMarine2(0,9);
-                //console.log(this.marines.children.length); // undefined
+            // if(this.time.now > this.timer  ) {
+            //     this.releaseMarine2(0,9);
+            //     //console.log(this.marines.children.length); // undefined
+            // }
+            if(this.time.now > this.beatTimer ) {
+                this.beatTimer = this.time.now + 1000;
+                // let nextTile = this.loneMarine.data.values.nextTile;
+                // console.log(nextTile);
+                // this.sendToTile(this.loneMarine,nextTile) ;
+                this.updateAndSend(this.loneMarine);
+                
             }
     }
 
