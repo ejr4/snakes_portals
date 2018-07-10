@@ -33,6 +33,7 @@ var Snake2 = new Phaser.Class({
         this.catchLine;
         this.nodeArray;
         this.tileCanMove;
+        this.activePortal;
     },
 
     preload: function ()
@@ -48,6 +49,7 @@ var Snake2 = new Phaser.Class({
         this.load.image('snakeY', 'assets/snakeY.png');
         this.load.image('glassTile', 'assets/glassTile.png');
         this.load.image('marine', 'assets/marine.png');
+        this.load.image('activePortal', 'assets/activePortal.png');
         
         
         this.load.image('portalTile', 'assets/portalTile.png');
