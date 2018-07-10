@@ -108,16 +108,8 @@ var Snake2 = new Phaser.Class({
             }
             this.tiles.push(row);
          }
-         /// original:
-    // mapMake: function() {
-    //     this.tiles = [];
-    //     for(let i = 0; i < 10; i++){
-    //         let row = [];
-    //         for(let j = 0; j<10; j++){
-    //             row.push(10*i + j + 1);
-    //         }
-    //         this.tiles.push(row);
-    //     }
+     
+  
         
         this.map = this.make.tilemap({ data: this.tiles, tileWidth: 64, tileHeight: 64 });// was 32
         this.tileset = this.map.addTilesetImage('tiles',null,64,64,2,4);//was 32,32,1,2
@@ -239,49 +231,18 @@ var Snake2 = new Phaser.Class({
         this.input.keyboard.on('keydown_SPACE', function (event) {
            this.portalPlace();
         }, this);
+        this.input.keyboard.on('keydown_B', function (event) {
+           this.portalPop();
+        }, this);
         /////////////////////////// test  !!!  
+      
        
-        // this.physics.add.overlap(this.marines, this.portalPowerUp, this.walkRight, null, this);
-        // this.physics.add.overlap(this.loneMarine, this.snakeEyes, this.slideDown, null, this); // this could be SnakeEyes
-        
-       
-        //  this.physics.add.overlap(this.loneMarine, this.testheads, this.testUp, null, this); // loneMarine
-        //  this.physics.add.overlap(this.marines, this.testheads, this.testUp, null, this);
-        // this.physics.add.overlap(this.loneMarine, this.instanceSnakeTail, this.walkRight, null, this);
+      
         this.physics.add.overlap(this.marines, this.ppUps, this.collectPortal, null, this);
         // this.physics.add.overlap(this.loneMarine, this.portalCentres, this.portalSend, null, this);
         //console.log('post-create log ');
     },
    
-
-    // snakePlace: function (snake, headObject) {
-    //     snake.setOrigin(0, 0.5)
-        
-    //     let tailTileNumber = headObject.getData('tailTileNumber');
-    //     snake.x = this.tileCentreXFromNumber(tailTileNumber);
-    //     snake.y = this.tileCentreYFromNumber(tailTileNumber);
-        
-    //     let rotation =Math.atan2(-snake.y + headObject.y, -snake.x + headObject.x);
-    //     snake.rotation = rotation;
-    //     let squareSum = (snake.x - headObject.x)*(snake.x - headObject.x) + (snake.y- headObject.y) * (snake.y- headObject.y) ;
-        
-    //     snake.scaleX = Math.sqrt(squareSum) / 256; // n.b. scaled
-    // },
-    
-    // ladderPlace: function (ladder, footObject) {
-    //     ladder.setOrigin(0, 0.5)
-    //     let topTileNumber = footObject.getData('topTileNumber');
-    //     let topTileX = this.tileCentreXFromNumber(topTileNumber);
-    //     let topTileY = this.tileCentreYFromNumber(topTileNumber);
-    
-    //     // console.log('ttx,y,ttN:',topTileX,topTileY,topTileNumber);
-        
-    //     let rotation =-Math.atan2(ladder.y - topTileY, ladder.x - topTileX);
-    //     ladder.rotation = rotation;
-    //     let squareSum = (ladder.x - topTileX)*(ladder.x - topTileX) + (ladder.y- topTileY) * (ladder.y- topTileY) ;
-    //     ladder.scaleX = Math.sqrt(squareSum) / 160; // n.b. scaled to tiles
-
-    // },
     
     collectPortal: function (marine, ppUp) 
     {
@@ -293,67 +254,40 @@ var Snake2 = new Phaser.Class({
   
     },
     portalPlace: function() {
+        let targetX = this.instancePortalTile.x;
+        let targetY = this.instancePortalTile.y;
+        let curTile = this.tileNumberFromXY(targetX,targetY) - 1; /// using old func here.
+        if (this.levelData[curTile]) return;
+        // check legal
         this.tileCanMove = false;
         this.instancePortalTile.disableBody(true,true);
-        let targetX = this.instancePortalZone.x;
-        let targetY = this.instancePortalZone.y;
-        let curTile = this.tileNumberFromXY(targetX,targetY) - 1; /// using old func here.
         this.instancePortalZone.disableBody(true,true);
         this.instanceActivePortal = this.activePortals.create(targetX,targetY,'activePortal').setAlpha(0.8);
         this.instanceActivePortal.setData('factor', 4);
-        this.levelData[curTile] = 4 * curTile;
+        
+        this.levelData[curTile] = (this.instanceActivePortal.data.values.factor * curTile > 100) ? 0 : 4 * curTile;
     },
+    /// combine these
     portalPop: function() {
+        let targetX = this.instanceActivePortal.x;
+        let targetY = this.instanceActivePortal.y;
+        let curTile = this.tileNumberFromXY(targetX,targetY) - 1;
+        this.instanceActivePortal.disableBody(true,true);
+        //this.instancePortalTile.disableBody(false,false);
+        //this.instancePortalZone.disableBody(false,false);
+        this.instancePortalTile.enableBody(true, targetX, targetY, true, true)
+        this.instancePortalZone.enableBody(true, targetX, targetY, true, true);
         this.tileCanMove = true;
-        // this.instancePortalTile.disableBody(false,false);
-        // this.instancePortalTile.enableBody(reset, x, y, true, true)
         // let targetX = this.instancePortalZone.x;
         // let targetY = this.instancePortalZone.y;
-        // this.instancePortalZone.disableBody(false,false);
         // this.instanceActivePortal = this.activePortal.create(targetX,targetY,'activePortal').setAlpha(0.8);
         // this.instanceActivePortal.setData('factor', 4);
         // this.levelData[curTile] = 4 * curTile;
+        this.levelData[curTile] = null;
     },
     // 
-    walkUp: function (marine, ladderFoot)
-    {
-        //console.log('walkUp');
-        this.goingUp = true;
-        let topTileNumber = ladderFoot.getData('topTileNumber');
-        let targetX = this.tileCentreXFromNumber(topTileNumber);
-        let targetY = this.tileCentreYFromNumber(topTileNumber);
-        this.physics.moveTo(marine,targetX,targetY,160);
-        this.catchLine = targetY + 16;
-    },
-    slideDown: function (marine, snakeEye)
-    {
-        // console.log('slideDown');
-        this.goingDown = true;
-        let targetX = this.tileCentreXFromNumber(snakeEye.getData('tailTileNumber'));
-        let targetY = this.tileCentreYFromNumber(snakeEye.getData('tailTileNumber'));
-        this.physics.moveTo(marine,targetX,targetY,160);
-        // console.log(targetX,targetY);
-        this.catchLine = targetY + 16;
-        
-    },
-    walkRight: function (marine, ladderBottom)
-    {
-        // this.loneMarine.setVelocityX(100);
-        // this.loneMarine.setVelocityY(0);
-        // this.walking = true;
-        // this.spinning = false;
-        // this.loneMarine.angle = 0;
-        // this.loneMarine.setAngularAcceleration(0);
-        // this.loneMarine.setAngularVelocity(0);
-        //orig.
-        // this.loneMarine.setVelocityX(100);
-        // this.loneMarine.setVelocityY(0);
-        // this.walking = true;
-        // this.spinning = false;
-        // this.loneMarine.angle = 0;
-        // this.loneMarine.setAngularDrag(0);
-        
-    },
+   
+    
 
   
     releaseMarine2: function (tX,tY) 
@@ -415,17 +349,7 @@ var Snake2 = new Phaser.Class({
     placePortal: function(tX,tY) {
         this.portalPowerUp = this.ppUps.create(64 * tX + 32, 64 * tY + 32, 'glassTile').setTint(0x448FF1).setAlpha(1,.5,.5, 0.3);
     },
-    portalSend: function(marine, portal) {
-        this.goingUp = true;
-        this.spinning = true;
-        let targetNumber = this.tileNumberFromXY(marine.x,marine.y)*4;
-        // console.log("in portalSend",targetNumber);
-        let targetX = this.tileCentreXFromNumber(targetNumber);
-        let targetY = this.tileCentreYFromNumber(targetNumber);
-        this.catchLine = targetY + 16;
-        this.physics.moveTo(marine,targetX,targetY,170);
-        //this.physics.moveTo(marine,100,100,170); what
-    },
+    
     mapWrap: function(marine) {
         if(marine && marine.x > 640){
             marine.y -= 64;
