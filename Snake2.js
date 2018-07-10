@@ -32,6 +32,7 @@ var Snake2 = new Phaser.Class({
         this.T;
         this.catchLine;
         this.nodeArray;
+        this.tileCanMove;
     },
 
     preload: function ()
@@ -130,26 +131,24 @@ var Snake2 = new Phaser.Class({
         this.levelData = [
              ,  ,  ,24,  ,  ,  ,  ,  ,  ,
              ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-             ,  ,  ,  ,  ,  ,13,  ,  ,  ,
+             ,35,  ,  ,  ,  ,13,  ,  ,  ,
+             ,  ,  ,  ,  ,  ,  ,  , 2,  ,
+             ,  ,  ,  ,  ,57,  ,  ,  ,  ,
+             ,95,  ,  ,  ,  ,  ,  ,  ,  ,
              ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
              ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-             ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-             ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-             ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-             ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-             ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+             ,  ,  ,  ,  ,54,  ,  ,66,  ,
+             ,  ,  ,  ,  ,45,  ,  ,  ,  ,
              100
         ];
         this.mapMake();
         this.nodeArray = this.makeNodeArray();
         this.timer = 0;
-        this.beatTimer = 0;
+        this.beatTimer = this.time.now + 1000;
         this.beatLength = 600;
         this.beats = 0;
-        this.walking = true;
-        this.goingDown = false;
-        this.goingUp = false;
-        this.spinning = false;
+       
+        this.tileCanMove = false;
         //// groups
         this.marines = this.physics.add.group({
             maxSize: 5,
@@ -167,7 +166,23 @@ var Snake2 = new Phaser.Class({
             runChildUpdate: true, //// ?
             defaultKey: 'ladder'
         });
-        
+        this.activePortals = this.physics.add.group({
+            maxSize: 8,
+            runChildUpdate: true,
+            defaultKey: 'activePortal',
+        });  // w/out physics?  
+        // this.anims.create({
+        //     key: 'woowoo',
+        //     frames: 
+        //     // frames: [
+        //     //     { key: 'cat1' },
+        //     //     { key: 'cat2' },
+        //     //     { key: 'cat3' },
+        //     //     { key: 'cat4', duration: 50 }
+        //     // ],
+        //     frameRate: 8,
+        //     repeat: -1
+        // });
         //this.thisFunction(4,4); /// after defining sneks
          this.getSnakes(this.levelData);  // not workign
         
@@ -176,8 +191,8 @@ var Snake2 = new Phaser.Class({
         this.portalTiles = this.physics.add.group();
         this.portalCentres = this.physics.add.group();
         ///////////
-        this.loneMarine = this.marines.create(32 ,64 * 9 + 48, 'marine');
-        this.loneMarine.setData({nextTile: 1 })
+        // this.loneMarine = this.marines.create(32 ,64 * 9 + 48, 'marine');
+        // this.loneMarine.setData({nextTile: 1 })
         
         
         // speed
@@ -189,57 +204,56 @@ var Snake2 = new Phaser.Class({
                 this.beatLength += 100;
                 console.log(this.beatLength);
         }, this);
-        this.input.keyboard.on('keydown_R', function (event) { 
-              this.sendToTile(this.loneMarine,1);
-        //    this.loneMarine.setVelocityX(100);
-        }, this);
+        // this.input.keyboard.on('keydown_R', function (event) { 
+        //       this.sendToTile(this.loneMarine,1);
+        // //    this.loneMarine.setVelocityX(100);
+        // }, this);
         /// tile placer
         this.input.keyboard.on('keydown_U', function (event) { 
-            this.placePortal(7,4);
+            this.placePortal(5,8);
         }, this);
         this.input.keyboard.on('keydown_A', function (event) {
-            if(this.instancePortalTile) {
+            if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.x -= 64;
             this.instancePortalZone.x -= 64;
             }
         }, this);
         this.input.keyboard.on('keydown_D', function (event) {
-            if(this.instancePortalTile) {
+            if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.x += 64;
             this.instancePortalZone.x += 64;
             }
         }, this);
     
         this.input.keyboard.on('keydown_W', function (event) {
-            if(this.instancePortalTile) {
+            if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.y -= 64;
             this.instancePortalZone.y -= 64;
             }
         }, this);
         this.input.keyboard.on('keydown_S', function (event) {
-            if(this.instancePortalTile) {
+            if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.y += 64;
             this.instancePortalZone.y += 64;
             }
         }, this);
+        this.input.keyboard.on('keydown_SPACE', function (event) {
+           this.portalPlace();
+        }, this);
         /////////////////////////// test  !!!  
        
-        this.physics.add.overlap(this.loneMarine, this.portalPowerUp, this.walkRight, null, this);
-        this.physics.add.overlap(this.loneMarine, this.snakeEyes, this.slideDown, null, this); // this could be SnakeEyes
+        // this.physics.add.overlap(this.marines, this.portalPowerUp, this.walkRight, null, this);
+        // this.physics.add.overlap(this.loneMarine, this.snakeEyes, this.slideDown, null, this); // this could be SnakeEyes
         
        
         //  this.physics.add.overlap(this.loneMarine, this.testheads, this.testUp, null, this); // loneMarine
-         this.physics.add.overlap(this.marines, this.testheads, this.testUp, null, this);
+        //  this.physics.add.overlap(this.marines, this.testheads, this.testUp, null, this);
         // this.physics.add.overlap(this.loneMarine, this.instanceSnakeTail, this.walkRight, null, this);
-        this.physics.add.overlap(this.loneMarine, this.ppUps, this.collectPortal, null, this);
-        this.physics.add.overlap(this.loneMarine, this.portalCentres, this.portalSend, null, this);
+        this.physics.add.overlap(this.marines, this.ppUps, this.collectPortal, null, this);
+        // this.physics.add.overlap(this.loneMarine, this.portalCentres, this.portalSend, null, this);
         //console.log('post-create log ');
     },
-   testUp: function(marine, other) {
-    // console.log('in testUp for testHead overlap');
- 
-    this.portalSend(marine,other);
-   },
+   
 
     // snakePlace: function (snake, headObject) {
     //     snake.setOrigin(0, 0.5)
@@ -255,29 +269,51 @@ var Snake2 = new Phaser.Class({
     //     snake.scaleX = Math.sqrt(squareSum) / 256; // n.b. scaled
     // },
     
-    ladderPlace: function (ladder, footObject) {
-        ladder.setOrigin(0, 0.5)
-        let topTileNumber = footObject.getData('topTileNumber');
-        let topTileX = this.tileCentreXFromNumber(topTileNumber);
-        let topTileY = this.tileCentreYFromNumber(topTileNumber);
+    // ladderPlace: function (ladder, footObject) {
+    //     ladder.setOrigin(0, 0.5)
+    //     let topTileNumber = footObject.getData('topTileNumber');
+    //     let topTileX = this.tileCentreXFromNumber(topTileNumber);
+    //     let topTileY = this.tileCentreYFromNumber(topTileNumber);
     
-        // console.log('ttx,y,ttN:',topTileX,topTileY,topTileNumber);
+    //     // console.log('ttx,y,ttN:',topTileX,topTileY,topTileNumber);
         
-        let rotation =-Math.atan2(ladder.y - topTileY, ladder.x - topTileX);
-        ladder.rotation = rotation;
-        let squareSum = (ladder.x - topTileX)*(ladder.x - topTileX) + (ladder.y- topTileY) * (ladder.y- topTileY) ;
-        ladder.scaleX = Math.sqrt(squareSum) / 160; // n.b. scaled to tiles
+    //     let rotation =-Math.atan2(ladder.y - topTileY, ladder.x - topTileX);
+    //     ladder.rotation = rotation;
+    //     let squareSum = (ladder.x - topTileX)*(ladder.x - topTileX) + (ladder.y- topTileY) * (ladder.y- topTileY) ;
+    //     ladder.scaleX = Math.sqrt(squareSum) / 160; // n.b. scaled to tiles
 
-    },
+    // },
     
     collectPortal: function (marine, ppUp) 
     {
         ppUp.disableBody(true, true);
         // console.log('in collectPortal');
-    
-            this.instancePortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'tile4').setAlpha(0.8,0.6,0.7, 0.5);
-            this.instancePortalZone = this.portalCentres.create(64 * 10 - 32, 64 * 10 - 15,'portalCentre');
+        this.tileCanMove = true;
+        this.instancePortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'tile4').setAlpha(0.8,0.6,0.7, 0.5);
+        this.instancePortalZone = this.portalCentres.create(64 * 10 - 32, 64 * 10 - 15,'portalCentre');
   
+    },
+    portalPlace: function() {
+        this.tileCanMove = false;
+        this.instancePortalTile.disableBody(true,true);
+        let targetX = this.instancePortalZone.x;
+        let targetY = this.instancePortalZone.y;
+        let curTile = this.tileNumberFromXY(targetX,targetY) - 1; /// using old func here.
+        this.instancePortalZone.disableBody(true,true);
+        this.instanceActivePortal = this.activePortals.create(targetX,targetY,'activePortal').setAlpha(0.8);
+        this.instanceActivePortal.setData('factor', 4);
+        this.levelData[curTile] = 4 * curTile;
+    },
+    portalPop: function() {
+        this.tileCanMove = true;
+        // this.instancePortalTile.disableBody(false,false);
+        // this.instancePortalTile.enableBody(reset, x, y, true, true)
+        // let targetX = this.instancePortalZone.x;
+        // let targetY = this.instancePortalZone.y;
+        // this.instancePortalZone.disableBody(false,false);
+        // this.instanceActivePortal = this.activePortal.create(targetX,targetY,'activePortal').setAlpha(0.8);
+        // this.instanceActivePortal.setData('factor', 4);
+        // this.levelData[curTile] = 4 * curTile;
     },
     // 
     walkUp: function (marine, ladderFoot)
@@ -303,13 +339,13 @@ var Snake2 = new Phaser.Class({
     },
     walkRight: function (marine, ladderBottom)
     {
-        this.loneMarine.setVelocityX(100);
-        this.loneMarine.setVelocityY(0);
-        this.walking = true;
-        this.spinning = false;
-        this.loneMarine.angle = 0;
-        this.loneMarine.setAngularAcceleration(0);
-        this.loneMarine.setAngularVelocity(0);
+        // this.loneMarine.setVelocityX(100);
+        // this.loneMarine.setVelocityY(0);
+        // this.walking = true;
+        // this.spinning = false;
+        // this.loneMarine.angle = 0;
+        // this.loneMarine.setAngularAcceleration(0);
+        // this.loneMarine.setAngularVelocity(0);
         //orig.
         // this.loneMarine.setVelocityX(100);
         // this.loneMarine.setVelocityY(0);
@@ -323,21 +359,22 @@ var Snake2 = new Phaser.Class({
   
     releaseMarine2: function (tX,tY) 
     {
-        this.timer = this.time.now + 1618;
+        this.timer = this.time.now + 2*this.beatLength;
         var marine = this.marines.get(); // works!
          
         if(marine){ 
           
             marine.setPosition(64 * tX + 48 ,64 * tY + 48);
    
-            marine.setVelocityX(100);
+            // marine.setVelocityX(100);  // no longer
+            marine.setData({nextTile: 1});
  
         }
     },
-    thisFunction: function(tailTile,headTile) {
-        let snake = this.snakes.get();
-        snake.setPosition(400,400);
-    },
+    // thisFunction: function(tailTile,headTile) {
+    //     let snake = this.snakes.get();
+    //     snake.setPosition(400,400);
+    // },
     resetMarine: function (marine) {
       marine.x = 16;
       marine.y = 640 - 16;
@@ -453,43 +490,32 @@ var Snake2 = new Phaser.Class({
     },
     
     update: function ()
-    {
-            this.mapWrap(this.loneMarine);
+    {       
+            this.marines.children.each( marine => this.mapWrap(marine),this);
+            //this.mapWrap(this.loneMarine);
             if(this.portalPowerUp) {
                 this.portalPowerUp.angle++;
             }
-            
-            if(this.goingUp && this.loneMarine.y < this.catchLine) {
-                this.walkRight();
-                this.goingUp = false;
-            }
-            if(this.goingDown && this.loneMarine.y > this.catchLine) {
-                this.walkRight();
-                this.goingDown = false;
-            }
-            if(this.spinning) {
-                this.loneMarine.angle += 14;
-            }
+
             if(this.instancePortalCentre) {
                 this.instancePortalCentre.angle += 90;
             }
-            if(this.loneMarine.y < - 200) {
-                this.resetMarine(this.loneMarine);
-            }
-            // if(this.time.now > this.timer  ) {
-            //     this.releaseMarine2(0,9);
-            //     //console.log(this.marines.children.length); // undefined
+            // if(this.loneMarine.y < - 200) {
+            //     this.resetMarine(this.loneMarine);
             // }
+            if(this.time.now > this.timer  ) {
+                //console.log(this.marines.children.length); // undefined
+            }
             if(this.time.now > this.beatTimer ) {
                 this.beatTimer = this.time.now + this.beatLength;
+                this.marines.children.each( marine => {
+                        this.updateAndSend(marine);
+                    });
+                this.releaseMarine2(0,9);
                 // let nextTile = this.loneMarine.data.values.nextTile;
-                // console.log(nextTile);
-                // this.sendToTile(this.loneMarine,nextTile) ;
-                this.updateAndSend(this.loneMarine);
-                
+
             }
     }
-
 });
 
 
