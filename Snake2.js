@@ -73,9 +73,11 @@ var Snake2 = new Phaser.Class({
                 let x = TSIZE * j + MHALF;
                 nodeArray.push([x,y]);
                 let nText = this.add.text(x, y);
-                nText.setText(10*i + j) ; // hackey?
+                nText.setText(10*i + j) ; // hackey? works!
             }
         }
+        // try tile 100:   /// 
+        nodeArray.push([10 * TSIZE + MHALF, TSIZE - MHALF]);
         return nodeArray;
     },
     getSnakes: function(levelData) {
@@ -83,10 +85,7 @@ var Snake2 = new Phaser.Class({
             datum = levelData[i];
             if (datum) {
                 if (datum < i) {
-                    //let marine = this.marines.get();
-                    // console.log(this); // is 'Snake2'
-                    // let ladder = this.ladders.get();
-                    // let snake = this.snakes.get();
+                 
                     this.snakeFromTiles(datum,i);
                 }
                 else if (datum > i) {
