@@ -25,4 +25,13 @@ The player's role is to strategically place 'portals' which send the characters 
 * Graphics
 * Sound
 * Level Genererator
-* AI to solve / verify levels 
+* AI to solve / verify levels (perhaps wasm ... just for kicks!)
+
+#### immediate dev tasks:
+
+* modularize! see Richard Davey's notes
+* more tiles and fix tile-control-toggling
+* perhaps refactor functions as belonging to game objects
+* win detect
+* change level / restart
+
