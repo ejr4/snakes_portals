@@ -1,7 +1,17 @@
-# snakes_portals
+# Snakes & Portals
+### (name may change)
 
-## this project is under construction and still contains Phaser 3 'scenes' not used in this game (e.g. Mario) which were and written by others and broken by me as a learning / templating exercise
+## Frameworks
+# Phaser 3
 
-## gameplay: snakes & ladders meets lemmings with numbered portals.  
+## Gameplay 
+
+### Good old-fashioned Snakes & Ladders meets lemmings with numbered portals.
+### It is a puzzle game rather than based on luck
+### *Multiplicative relationships between numbers are explored through gameplay: no 'math questions' are presented formally. 
+### *(for now, possibly with division, addition, subtraction in the future)
+
+### The on-screen characters move automatically
+### Player's role is to strategically place 'portals' which send the characters to a new square which is a function of the number on the existing square
 
 ## not deployable yet 
