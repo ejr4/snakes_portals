@@ -1,4 +1,4 @@
-// this build models BreakoutForReference as closely as poss. 
+// old build using physics to drive game  
 var Snakes = new Phaser.Class({
 
     Extends: Phaser.Scene,
