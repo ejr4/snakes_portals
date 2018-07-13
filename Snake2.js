@@ -236,6 +236,21 @@ var Snake2 = new Phaser.Class({
         this.physics.add.overlap(this.marines, this.ppUps, this.collectPortal, null, this);
         // this.physics.add.overlap(this.loneMarine, this.portalCentres, this.portalSend, null, this);
         //console.log('post-create log ');
+        // random tint
+        this.snakes.children.each( snake => {
+            console.log('snakes_children_each');
+            let someColors = [
+                0x55F055,
+                0x00DD00,
+                0x0FF0EE,
+                0x0FBBBF,
+                0xBFEFF0,
+                0xAAFAAA
+            ]
+            let randomTint = someColors[Math.random() * 6 | 0 ]; 
+            let borrowedRand = (Math.random()*0xFFFFFF<<0).toString(16);
+            snake.setTint(randomTint);
+        })
     },
    
     collectPortal: function (marine, ppUp) 
