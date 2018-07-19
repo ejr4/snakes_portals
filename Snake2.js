@@ -43,12 +43,12 @@ var Snake2 = new Phaser.Class({
         this.load.image('glassTile', 'assets/glassTile.png');
         this.load.image('marine', 'assets/marine.png');
         // this.load.image('activePortal', 'assets/activePortal.png');
-        this.load.image('activePortal', 'assets/activePortalGif.gif');
-        this.load.spritesheet('activePortalSheet', 'assets/activePortalSheet.png', { frameWidth: 32, frameHeight: 32 });
+        //this.load.image('activePortal', 'assets/activePortalGif.gif');
+        this.load.spritesheet('activePortalSheet', 'assets/activePortalSheet3.png', { frameWidth: 32, frameHeight: 32 }); /// n.b. 2
         // try animating the sprite here
         
         /// test with dude.
-        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+        //this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
     
         
         this.load.image('portalTile', 'assets/portalTile.png');
@@ -161,16 +161,16 @@ var Snake2 = new Phaser.Class({
             runChildUpdate: true,
             defaultKey: 'activePortalSheet',
         });  // w/out physics?  
-        this.anims.create({
-            // this.anims.create({
-                key: 'twoFrames',
-                frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
-                frameRate: 15,
-                repeat: -1
-            });
+        // this.anims.create({
+        //     // this.anims.create({
+        //         key: 'twoFrames',
+        //         frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
+        //         frameRate: 15,
+        //         repeat: -1
+        //     });
         this.anims.create({
             key: 'portalFlux',
-            frames: this.anims.generateFrameNumbers('activePortalSheet', { start: 0, end: 1 }),
+            frames: this.anims.generateFrameNumbers('activePortalSheet', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });
