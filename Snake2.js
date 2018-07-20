@@ -14,7 +14,7 @@ var Snake2 = new Phaser.Class({
         this.snakes;
         this.ladders;
         this.marines;
-        this.portalCentres;
+        //this.portalCentres;
         this.levelData;
         this.ppUps;
         this.portalTiles;
@@ -43,16 +43,16 @@ var Snake2 = new Phaser.Class({
         this.load.image('glassTile', 'assets/glassTile.png');
         this.load.image('marine', 'assets/marine.png');
         // this.load.image('activePortal', 'assets/activePortal.png');
-        //this.load.image('activePortal', 'assets/activePortalGif.gif');
-        this.load.spritesheet('activePortalSheet', 'assets/activePortalSheet3.png', { frameWidth: 32, frameHeight: 32 }); /// n.b. 2
+
+        this.load.spritesheet('2sheet', 'assets/2sheet.png', { frameWidth: 32, frameHeight: 32 }); /// n.b. 2
+        this.load.spritesheet('3sheet', 'assets/3sheet.png', { frameWidth: 32, frameHeight: 32 }); /// n.b. 2
+        this.load.spritesheet('4sheet', 'assets/4sheet.png', { frameWidth: 32, frameHeight: 32 }); /// n.b. 2
+        this.load.spritesheet('5sheet', 'assets/5sheet.png', { frameWidth: 32, frameHeight: 32 }); /// n.b. 2
         // try animating the sprite here
-        
-        /// test with dude.
-        //this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-    
+ 
         
         this.load.image('portalTile', 'assets/portalTile.png');
-        this.load.image('portalCentre', 'assets/portalCentre.png');
+        //this.load.image('portalCentre', 'assets/portalCentre.png');
         this.load.image('tile4', 'assets/tile4.png');
         this.load.image('snake3', 'assets/snake3.png');
         
@@ -169,8 +169,26 @@ var Snake2 = new Phaser.Class({
         //         repeat: -1
         //     });
         this.anims.create({
-            key: 'portalFlux',
-            frames: this.anims.generateFrameNumbers('activePortalSheet', { start: 0, end: 3 }),
+            key: 'portalFlux2',
+            frames: this.anims.generateFrameNumbers('2sheet', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'portalFlux3',
+            frames: this.anims.generateFrameNumbers('3sheet', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'portalFlux4',
+            frames: this.anims.generateFrameNumbers('4sheet', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'portalFlux5',
+            frames: this.anims.generateFrameNumbers('5sheet', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });
@@ -181,7 +199,7 @@ var Snake2 = new Phaser.Class({
         this.ppUps = this.physics.add.group();
         
         this.portalTiles = this.physics.add.group();
-        this.portalCentres = this.physics.add.group();
+        //this.portalCentres = this.physics.add.group();
         ///////////
 
         // speed
@@ -199,31 +217,31 @@ var Snake2 = new Phaser.Class({
         },this);
       
         this.input.keyboard.on('keydown_U', function (event) { 
-            this.placePortal(5,8);
+            this.placePPUp(5,8);
         }, this);
         this.input.keyboard.on('keydown_A', function (event) {
             if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.x -= 64;
-            this.instancePortalZone.x -= 64;
+            // this.instancePortalZone.x -= 64;
             }
         }, this);
         this.input.keyboard.on('keydown_D', function (event) {
             if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.x += 64;
-            this.instancePortalZone.x += 64;
+            // this.instancePortalZone.x += 64;
             }
         }, this);
     
         this.input.keyboard.on('keydown_W', function (event) {
             if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.y -= 64;
-            this.instancePortalZone.y -= 64;
+            // this.instancePortalZone.y -= 64;
             }
         }, this);
         this.input.keyboard.on('keydown_S', function (event) {
             if(this.tileCanMove && this.instancePortalTile) {
             this.instancePortalTile.y += 64;
-            this.instancePortalZone.y += 64;
+            // this.instancePortalZone.y += 64;
             }
         }, this);
         this.input.keyboard.on('keydown_SPACE', function (event) {
@@ -234,7 +252,7 @@ var Snake2 = new Phaser.Class({
         }, this);
      
         this.physics.add.overlap(this.marines, this.ppUps, this.collectPortal, null, this);
-        // this.physics.add.overlap(this.loneMarine, this.portalCentres, this.portalSend, null, this);
+      
         //console.log('post-create log ');
         // random tint
         this.snakes.children.each( snake => {
@@ -251,6 +269,13 @@ var Snake2 = new Phaser.Class({
             let borrowedRand = (Math.random()*0xFFFFFF<<0).toString(16);
             snake.setTint(randomTint);
         })
+        // instantiate some powerups
+        // use tile number?
+        // how to set multiplier?
+        this.placePPUp(5,8);
+        this.placePPUp(5,8);
+        this.placePPUp(5,8);
+        this.placePPUp(5,8);
     },
    
     collectPortal: function (marine, ppUp) 
@@ -259,7 +284,7 @@ var Snake2 = new Phaser.Class({
         // console.log('in collectPortal');
         this.tileCanMove = true;
         this.instancePortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'tile4').setAlpha(0.8,0.6,0.7, 0.5);
-        this.instancePortalZone = this.portalCentres.create(64 * 10 - 32, 64 * 10 - 15,'portalCentre');
+        //this.instancePortalZone = this.portalCentres.create(64 * 10 - 32, 64 * 10 - 15,'portalCentre');
   
     },
     
@@ -278,6 +303,31 @@ var Snake2 = new Phaser.Class({
         
         */
     },
+    // new multicolor: 
+    portalPlace2: function() {
+        let colorArray = [
+            0x55F055,
+            0x00DD00,
+            0x0FF0EE,
+            0x0FBBBF,
+            0xBFEFF0,
+            0xFFFAAA
+        ]
+        let targetX = this.instancePortalTile.x;
+        let targetY = this.instancePortalTile.y;
+        let curTile = this.tileNumberFromXY(targetX,targetY) - 1; /// using old func here.
+        if (this.levelData[curTile]) return;
+        // check legal
+        this.tileCanMove = false;
+        this.instancePortalTile.disableBody(true,true);
+        // this.instancePortalZone.disableBody(true,true);
+        // this.instanceActivePortal = this.activePortals.create(targetX,targetY,'activePortal').setAlpha(0.8);
+        this.instanceActivePortal = this.physics.add.sprite(targetX, targetY, '4sheet');
+        this.instanceActivePortal.setData('factor', 4);
+        this.instanceActivePortal.anims.play('portalFlux4', true);
+        console.log(this.instanceActivePortal.anims);
+        this.levelData[curTile] = (this.instanceActivePortal.data.values.factor * curTile > 100) ? 0 : 4 * curTile;
+    },
     portalPlace: function() {
         let targetX = this.instancePortalTile.x;
         let targetY = this.instancePortalTile.y;
@@ -286,11 +336,11 @@ var Snake2 = new Phaser.Class({
         // check legal
         this.tileCanMove = false;
         this.instancePortalTile.disableBody(true,true);
-        this.instancePortalZone.disableBody(true,true);
+        // this.instancePortalZone.disableBody(true,true);
         // this.instanceActivePortal = this.activePortals.create(targetX,targetY,'activePortal').setAlpha(0.8);
-        this.instanceActivePortal = this.physics.add.sprite(targetX, targetY, 'activePortalSheet');
+        this.instanceActivePortal = this.physics.add.sprite(targetX, targetY, '4sheet');
         this.instanceActivePortal.setData('factor', 4);
-        this.instanceActivePortal.anims.play('portalFlux', true);
+        this.instanceActivePortal.anims.play('portalFlux4', true);
         console.log(this.instanceActivePortal.anims);
         this.levelData[curTile] = (this.instanceActivePortal.data.values.factor * curTile > 100) ? 0 : 4 * curTile;
     },
@@ -303,7 +353,7 @@ var Snake2 = new Phaser.Class({
         //this.instancePortalTile.disableBody(false,false);
         //this.instancePortalZone.disableBody(false,false);
         this.instancePortalTile.enableBody(true, targetX, targetY, true, true)
-        this.instancePortalZone.enableBody(true, targetX, targetY, true, true);
+        // this.instancePortalZone.enableBody(true, targetX, targetY, true, true);
         this.tileCanMove = true;
       
         this.levelData[curTile] = null;
@@ -362,8 +412,17 @@ var Snake2 = new Phaser.Class({
     },
 
     //place portal tile  
-    placePortal: function(tX,tY) {
-        this.portalPowerUp = this.ppUps.create(64 * tX + 32, 64 * tY + 32, 'glassTile').setTint(0x448FF1).setAlpha(1,.5,.5, 0.3);
+    placePPUp: function(tX,tY,multiplier = 0) {
+        // colorize
+        let colorArray = [
+            0xFFFFFF,
+            0x00DD00,
+            0x0FF0EE,
+            0x0FBBBF,
+            0xBFEFF0,
+            0xFFFAAA
+        ]
+        this.portalPowerUp = this.ppUps.create(64 * tX + 32, 64 * tY + 32, 'glassTile').setTint(colorArray[multiplier]).setAlpha(1,.5,.5, 0.3);
     },
     
     mapWrap: function(marine) {
@@ -419,9 +478,9 @@ var Snake2 = new Phaser.Class({
                 this.portalPowerUp.angle++;
             }
 
-            if(this.instancePortalCentre) {
-                this.instancePortalCentre.angle += 90;
-            }
+            // if(this.instancePortalCentre) {
+            //     this.instancePortalCentre.angle += 90;
+            // }
             // if(this.loneMarine.y < - 200) {
             //     this.resetMarine(this.loneMarine);
             // }
