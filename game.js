@@ -8,7 +8,7 @@ var config = {
     //     //     gravity: {y : 500}
     //     // }
  },
-    // scene: [Splash, Snakes   ] // order of appearance 
+    // scene: [Splash, Snake2   ] // order of appearance 
     scene: [Snake2   ] // order of appearance 
 };
 

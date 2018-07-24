@@ -14,7 +14,7 @@ var Snake2 = new Phaser.Class({
         this.snakes;
         this.ladders;
         this.marines;
-        //this.portalCentres;
+        
         this.levelData;
         this.ppUps;
         this.portalTiles;
@@ -27,7 +27,7 @@ var Snake2 = new Phaser.Class({
         this.nodeArray;
         this.tileCanMove;
         this.activePortals;
-        this.testDude;
+    
     },
 
     preload: function ()
@@ -161,13 +161,7 @@ var Snake2 = new Phaser.Class({
             runChildUpdate: true,
             defaultKey: 'activePortalSheet',
         });  // w/out physics?  
-        // this.anims.create({
-        //     // this.anims.create({
-        //         key: 'twoFrames',
-        //         frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
-        //         frameRate: 15,
-        //         repeat: -1
-        //     });
+      
         this.anims.create({
             key: 'portalFlux2',
             frames: this.anims.generateFrameNumbers('2sheet', { start: 0, end: 3 }),
@@ -193,13 +187,13 @@ var Snake2 = new Phaser.Class({
             repeat: -1
         });
        
-        //this.thisFunction(4,4); /// after defining sneks
-         this.getSnakes(this.levelData);  // 
+        
+        this.getSnakes(this.levelData);  // 
         
         this.ppUps = this.physics.add.group();
         
         this.portalTiles = this.physics.add.group();
-        //this.portalCentres = this.physics.add.group();
+        
         ///////////
 
         // speed
@@ -253,7 +247,6 @@ var Snake2 = new Phaser.Class({
      
         this.physics.add.overlap(this.marines, this.ppUps, this.collectPortal, null, this);
       
-        //console.log('post-create log ');
         // random tint
         this.snakes.children.each( snake => {
             console.log('snakes_children_each');
@@ -284,7 +277,7 @@ var Snake2 = new Phaser.Class({
         // console.log('in collectPortal');
         this.tileCanMove = true;
         this.instancePortalTile = this.portalTiles.create(64 * 10 - 32, 64 * 10 - 32, 'tile4').setAlpha(0.8,0.6,0.7, 0.5);
-        //this.instancePortalZone = this.portalCentres.create(64 * 10 - 32, 64 * 10 - 15,'portalCentre');
+       
   
     },
     
@@ -320,7 +313,7 @@ var Snake2 = new Phaser.Class({
         // check legal
         this.tileCanMove = false;
         this.instancePortalTile.disableBody(true,true);
-        // this.instancePortalZone.disableBody(true,true);
+     
         // this.instanceActivePortal = this.activePortals.create(targetX,targetY,'activePortal').setAlpha(0.8);
         this.instanceActivePortal = this.physics.add.sprite(targetX, targetY, '4sheet');
         this.instanceActivePortal.setData('factor', 4);
@@ -336,7 +329,7 @@ var Snake2 = new Phaser.Class({
         // check legal
         this.tileCanMove = false;
         this.instancePortalTile.disableBody(true,true);
-        // this.instancePortalZone.disableBody(true,true);
+        
         // this.instanceActivePortal = this.activePortals.create(targetX,targetY,'activePortal').setAlpha(0.8);
         this.instanceActivePortal = this.physics.add.sprite(targetX, targetY, '4sheet');
         this.instanceActivePortal.setData('factor', 4);
@@ -350,10 +343,9 @@ var Snake2 = new Phaser.Class({
         let targetY = this.instanceActivePortal.y;
         let curTile = this.tileNumberFromXY(targetX,targetY) - 1;
         this.instanceActivePortal.disableBody(true,true);
-        //this.instancePortalTile.disableBody(false,false);
-        //this.instancePortalZone.disableBody(false,false);
+       
         this.instancePortalTile.enableBody(true, targetX, targetY, true, true)
-        // this.instancePortalZone.enableBody(true, targetX, targetY, true, true);
+     
         this.tileCanMove = true;
       
         this.levelData[curTile] = null;
@@ -368,7 +360,6 @@ var Snake2 = new Phaser.Class({
           
             marine.setPosition(64 * tX + 48 ,64 * tY + 48);
    
-            // marine.setVelocityX(100);  // no longer
             marine.setData({nextTile: 1});
  
         }
@@ -478,14 +469,12 @@ var Snake2 = new Phaser.Class({
                 this.portalPowerUp.angle++;
             }
 
-            // if(this.instancePortalCentre) {
-            //     this.instancePortalCentre.angle += 90;
-            // }
             // if(this.loneMarine.y < - 200) {
             //     this.resetMarine(this.loneMarine);
             // }
             if(this.time.now > this.timer  ) {
                 //console.log(this.marines.children.length); // undefined
+                // will phase out 
             }
             if(this.time.now > this.beatTimer ) {
                 this.beatTimer = this.time.now + this.beatLength;
